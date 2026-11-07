@@ -1,55 +1,52 @@
 # Fieldbook
 
-**Quote → job → invoice → paid, in one place.** Fieldbook is a small-business app for one-to-five-person trades and service businesses: handymen, painters, cleaners, landscapers, contractors.
+**Free quotes, jobs and invoices for trade and service businesses.** Price a job, book it, invoice it and get paid, from your phone or computer. There's no account and no subscription, and your data never leaves your device.
 
-Most tools in this space cost $30+/month and bury the basics under features. Fieldbook does the core loop well and works on any device with a browser.
+**[Open Fieldbook →](https://lilmoike.github.io/fieldbook/)**  ·  Set up your business in a minute, or explore a sample business first.
 
-**[Try the live demo →](https://lilmoike.github.io/fieldbook/)**
+![Fieldbook invoices screen](docs/overview.png)
 
-![Fieldbook overview screen](docs/overview.png)
+## What you can do
 
-## What it does
-
-| Stage | Features |
+| | |
 |---|---|
-| **Quote** | Line items for labour, materials and flat fees · one-click price book · 13% HST calculated automatically · draft → sent → accepted / declined, with sent quotes locked against edits |
-| **Job** | Accepted quotes become work orders · scheduled date · checklist · site notes (door codes, paint colours) · extra work found on site carries over to the invoice |
-| **Invoice** | Created from a finished job in one click · Net 0 / 7 / 15 / 30 / 45 terms · partial payments · overdue tracking · "Copy as text" to paste into an email or text · print or save as PDF |
-| **Deposits** | Request a deposit (30% by default) on an accepted quote or booked job · paid deposits are credited automatically on the final invoice · unpaid deposits are voided when the final invoice replaces them |
-| **Getting paid** | Friendly or overdue reminder messages, written for you and logged · late fees at a set % per month, at most once every 30 days and never taxed · a full activity log on every invoice |
-| **Tax** | Correct sales tax for every province and territory (HST, GST + PST, GST + QST) · switch tax off per line · every document keeps the rate it was created with, so changing settings never rewrites old invoices |
-| **Discounts** | Percentage or dollar discounts, applied before tax |
-| **Overview** | Money at each stage of the pipeline, and a *Needs attention* list: overdue invoices (with when you last sent a reminder), finished jobs not yet invoiced, quotes with no reply after 7 days, unsent drafts |
-| **Receivables** | An aging report that groups unpaid balances into current, 1–30, 31–60, 61–90 and 90+ days overdue |
+| **Quotes** | Line items for labour, materials and flat fees · one-click price book · discounts · the right sales tax for your province · accepted quotes become jobs |
+| **Jobs** | Work orders with dates, checklists and site notes · extra work found on site carries over to the invoice |
+| **Invoices** | Created from a finished job in one click · payment terms · partial payments · deposits credited automatically · late fees · void instead of delete, so numbering has no gaps |
+| **Send it** | **Download a PDF**, **share it** straight to Messages, WhatsApp or email from your phone, or open a pre-written email to your client |
+| **Get paid** | Friendly and overdue reminder messages · a "who owes you" aging report · an activity log on every invoice |
+| **Your brand** | Your logo, business details and GST/HST number on every PDF · carry on from your existing quote and invoice numbers |
+| **Install it** | Add it to your phone's home screen and it works like an app, even offline |
 
-It also includes a client list with each client's full history and balance owing, light and dark themes, and a phone layout with a bottom tab bar.
+![A quote PDF made with Fieldbook](docs/quote-pdf.png)
+
+## Your data
+
+Everything is saved in your browser on your device. Nothing is uploaded, so nobody else can see your clients or invoices. That also means:
+
+- **Download a backup regularly** (Settings → Your data). Fieldbook reminds you every two weeks.
+- **To move to a new phone or computer**, restore that backup file there.
+- Clearing your browser's site data erases Fieldbook's data on that device.
+
+## Sales tax
+
+Fieldbook charges HST, GST + PST, or GST + QST based on your province or territory, and you can switch tax off for any line. Each quote and invoice keeps the rate it was created with. Tax rules for some services vary, so check with your accountant if you're unsure.
 
 ## How it's built
 
-- **One file, no build step, no framework.** It's plain HTML, CSS and JavaScript in [`index.html`](index.html).
-- **Money is handled in integer cents** so totals and tax never drift from floating-point rounding.
-- **Invoices are never deleted once sent.** They're voided instead, so invoice numbers have no gaps, as bookkeeping expects.
-- **Status is derived, not stored.** An invoice's status (draft, sent, part paid, overdue, paid) is computed from its payments, due date and sent flag, so it can't fall out of sync.
-- **Data lives in the browser** (`localStorage`). Sample data is generated relative to today's date, so the demo always looks current. *Reset sample data* restores it.
-- **Responsive and accessible.** Keyboard focus states, labelled controls, `prefers-reduced-motion` and `prefers-color-scheme` support, and phone safe-area handling.
-
-## Run it locally
-
-Download `index.html` and open it in any browser. That's it.
+- **One HTML file, no framework, no build step, no server.** Plain HTML, CSS and JavaScript in [`index.html`](index.html), with [jsPDF](https://github.com/parallax/jsPDF) for PDFs.
+- **Money is handled in integer cents**, so totals and tax never drift from rounding.
+- **Status is derived, not stored.** An invoice's status (draft, sent, part paid, overdue, paid, void) is computed from its payments, due date and flags, so it can't fall out of sync.
+- **Installable and offline** through a web app manifest and a service worker ([`sw.js`](sw.js)).
+- **Tested** with Playwright in headless Edge: setup, the full quote-to-paid flow, tax and deposit math, PDF contents, backup and restore, and phone layouts.
 
 ## Roadmap
 
-- Sync across devices (e.g. Supabase) so a crew can share one account
-- Installable PWA with offline support
-- Email quotes and invoices directly, with an "Accept quote" link for clients
+- Sync between devices (optional, for crews)
 - Recurring invoices for maintenance contracts
 - Client statements listing every open invoice
-- Card payments through Stripe or Square
-
-## Note
-
-All businesses, clients, phone numbers (555-01xx) and email addresses in the sample data are fictional.
+- Online card payments
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © 2026 Michael Ricci

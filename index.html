@@ -3,8 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Fieldbook: quote, job, invoice and payment tracking for small trades and service businesses.">
+<meta name="description" content="Fieldbook: free quotes, jobs and invoices for trade and service businesses. Your data stays on your device.">
 <meta name="theme-color" content="#18232b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:title" content="Fieldbook">
+<meta property="og:description" content="Free quotes, jobs and invoices for trade businesses. Send PDFs by text or email.">
+<meta property="og:image" content="https://lilmoike.github.io/fieldbook/docs/overview.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 <title>Fieldbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -273,7 +281,32 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
 .copyfall textarea{width:100%;height:180px;font:13px/1.45 var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px}
 .copyfall div{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
 
-@media (max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
+/* first run, banners, data */
+.welcome{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start;padding-block:8px 24px}
+.welcome h1{font-size:clamp(34px,5vw,54px);line-height:1}
+.promise{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px;font-size:15px}
+.promise li{display:flex;gap:10px;align-items:baseline}
+.promise li::before{content:"";flex:none;width:10px;height:6px;border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg) translateY(-2px)}
+.setup{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-top:22px;display:grid;gap:16px}
+.setup .sec{margin:0}
+.req::after{content:" (required)";text-transform:none;letter-spacing:0;font-weight:400}
+.look{background:var(--surface);border:1px dashed var(--ink-2);border-radius:var(--r);padding:20px 22px;display:grid;gap:12px;align-content:start}
+.look p{margin:0}
+.banner{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:var(--r);background:var(--info-bg);margin-bottom:18px;font-size:14px}
+.banner.ok{background:var(--ok-bg);margin:0 0 12px}
+.banner .acts{display:flex;gap:8px;flex-wrap:wrap}
+.logo-img{display:block;max-height:52px;max-width:200px;object-fit:contain;margin-bottom:8px}
+.logo-prev{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo-prev img{max-height:56px;max-width:200px;border:1px solid var(--line);border-radius:4px;padding:4px;background:#ffffff}
+.seq{display:flex;align-items:baseline;gap:4px}
+.seq .f{max-width:120px;text-align:left}
+.data-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.data-row .spacer{flex:1}
+.restore-confirm{margin-top:14px;padding:14px 16px;border-radius:var(--r);background:var(--warn-bg)}
+.restore-confirm p{margin:6px 0 0}
+.foot a{color:inherit}
+
+@media (max-width:860px){.cols,.welcome{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){
   .flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .flow li::after{display:none}
@@ -346,8 +379,8 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   <div class="wrap top-in">
     <div class="brand">
       <span class="logo"><i aria-hidden="true"></i>Fieldbook</span>
-      <span class="biz" id="hdr-biz">Harbourline Home Services · Oshawa, ON</span>
-      <span class="demo">Demo</span>
+      <span class="biz" id="hdr-biz"></span>
+      <span class="demo" id="hdr-demo" hidden>Sample data</span>
     </div>
     <button class="icon-btn hdr-icon" data-act="settings" id="hdr-settings" aria-label="Settings" title="Settings"></button>
     <button class="btn primary" data-act="new-quote" id="hdr-new">New quote</button>
@@ -355,10 +388,9 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   <nav class="tabs" id="tabs" aria-label="Sections"></nav>
 </div>
 <main class="wrap" id="view"></main>
-<footer class="wrap foot">
-  <span>Fieldbook is a portfolio demo with sample clients. Your changes save in this browser only.</span>
-  <button class="btn sm ghost" data-act="reset" id="reset-btn">Reset sample data</button>
-</footer>
+<footer class="wrap foot" id="foot"></footer>
+<input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+<input type="file" id="restore-file" accept="application/json,.json" hidden>
 <div class="scrim" id="scrim" hidden data-act="close"></div>
 <aside class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Document"></aside>
 <div class="copyfall" id="copyfall" hidden>
@@ -366,11 +398,12 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   <textarea id="copyfall-text" readonly aria-label="Text to copy"></textarea>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 (() => {
 'use strict';
-const KEY = 'fieldbook-demo-v2';
+const KEY = 'fieldbook-v3';
 const PROVINCES = {
   ON:{name:'Ontario', taxes:[{label:'HST', rate:13}]},
   NS:{name:'Nova Scotia', taxes:[{label:'HST', rate:14}]},
@@ -397,6 +430,9 @@ const PRICEBOOK = [
   {desc:'Interior paint, 3.78 L', kind:'material', qty:1, unit:'can', rate:68},
 ];
 const METHODS = ['e-Transfer','Cash','Cheque','Debit','Credit card'];
+const BLANK_SETTINGS = {name:'', addr:'', phone:'', email:'', hst:'', etransfer:'', province:'ON', terms:15, lateRate:2, depositPct:30, logo:''};
+const SAMPLE_SETTINGS = {name:'Harbourline Home Services', addr:'Oshawa, ON', phone:'905-555-0100', email:'office@harbourline.example', hst:'81234 5678 RT0001', etransfer:'pay@harbourline.example', province:'ON', terms:15, lateRate:2, depositPct:30, logo:''};
+const PREFIX = {q:'Q-', j:'J-', i:'INV-'};
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -417,7 +453,9 @@ const clone = items => items.map(i => ({...i, id: uid()}));
 const relDay = s => { const n = daysBetween(TODAY, s); return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : n === -1 ? 'Yesterday' : n > 1 ? `In ${n} days` : `${-n} days ago`; };
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const ev = (date, text) => ({id: uid(), date, text});
-const canPrint = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+const STANDALONE = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+const hasPDF = () => !!(window.jspdf && window.jspdf.jsPDF);
+const canShareFiles = () => { try { return !!(navigator.canShare && navigator.canShare({files:[new File(['x'], 'x.pdf', {type:'application/pdf'})]})); } catch (e) { return false; } };
 
 function totals(r) {
   const items = r.items || [];
@@ -444,14 +482,20 @@ const ICON = {
   print: svg('<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="1.5"/><path d="M7 14h10v6.5H7z"/>'),
   bell: svg('<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
   sliders: svg('<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'),
+  share: svg('<path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 12.5v7h14v-7"/>'),
+  download: svg('<path d="M12 3.5V15M7.5 10.5 12 15l4.5-4.5"/><path d="M5 19.5h14"/>'),
+  mail: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>'),
 };
 
 /* ---------- data ---------- */
-const DEFAULT_SETTINGS = {name:'Harbourline Home Services', addr:'Oshawa, ON', phone:'905-555-0100', email:'office@harbourline.example', hst:'81234 5678 RT0001', etransfer:'pay@harbourline.example', province:'ON', terms:15, lateRate:2, depositPct:30};
+let db = null;
 function docTaxes() { const p = PROVINCES[(db && db.settings.province) || 'ON'] || PROVINCES.ON; return p.taxes.map(t => ({...t})); }
 const taxesOf = r => (r.taxes || docTaxes()).map(t => ({label:t.label, rate:t.rate}));
 const taxSummary = taxes => taxes.map(t => `${t.label} ${fmtRate(t.rate)}%`).join(' + ');
 
+function fresh(settings) {
+  return {v:3, demo:false, edited:true, created:TODAY, lastBackup:null, settings:{...BLANK_SETTINGS, ...settings}, clients:[], quotes:[], jobs:[], invoices:[], seq:{q:1001, j:101, i:1001}};
+}
 function seed() {
   const TX = () => PROVINCES.ON.taxes.map(t => ({...t}));
   const L = (desc, kind, qty, unit, rate, x = {}) => ({id: uid(), desc, kind, qty, unit, rate, taxable: true, ...x});
@@ -512,13 +556,11 @@ function seed() {
   const drainBal = totals({items:drainItems, taxes:TX()}).total;
   const drainFee = Math.round(drainBal * 0.02);
   drainItems.push(L(`Late fee: 2% of ${money(drainBal)} overdue`, 'flat', 1, 'ea', drainFee / 100, {taxable:false, fee:true, feeDate:rel(-17)}));
-  const bathTotal = totals({items:S.bath(), taxes:TX()}).total;
-  const depCents = Math.round(bathTotal * 0.3);
+  const depCents = Math.round(totals({items:S.bath(), taxes:TX()}).total * 0.3);
   const invoices = [
     inv({id:'i2204', num:'INV-2204', clientId:'c5', title:'Unit 1C drain clearing', date:rel(-62), items:drainItems, lastReminder:rel(-20),
       extraLog:[ev(rel(-40),'Friendly reminder sent'), ev(rel(-20),'Overdue reminder sent'), ev(rel(-17),`Late fee of ${money(drainFee)} added`)]}),
-    inv({id:'i2205', num:'INV-2205', clientId:'c3', title:'Reception shelving install', date:rel(-26), items:S.shelf(), void:true,
-      extraLog:[ev(rel(-26),'Voided: duplicate of INV-2206')]}),
+    inv({id:'i2205', num:'INV-2205', clientId:'c3', title:'Reception shelving install', date:rel(-26), items:S.shelf(), void:true, extraLog:[ev(rel(-26),'Voided: duplicate of INV-2206')]}),
     inv({id:'i2206', num:'INV-2206', clientId:'c3', jobId:'j308', from:'Created from J-308', title:'Reception shelving install', date:rel(-26), items:S.shelf(), pay:t => [{id:uid(),date:rel(-14),cents:t,method:'Cheque'}]}),
     inv({id:'i2207', num:'INV-2207', clientId:'c4', jobId:'j309', quoteId:'q1039', from:'Created from J-309', title:'Gutter clean-out', date:rel(-20), items:S.gutter(), pay:t => [{id:uid(),date:rel(-6),cents:t,method:'e-Transfer'}]}),
     inv({id:'i2208', num:'INV-2208', clientId:'c5', jobId:'j310', quoteId:'q1040', from:'Created from J-310', title:'Unit 2A fixture swap', date:rel(-24), items:S.fix2a()}),
@@ -527,22 +569,26 @@ function seed() {
       items:[L('Deposit (30%) for Q-1041 Basement bathroom refresh','flat',1,'ea',depCents / 100,{taxable:false})], notes:'This deposit is credited in full on the final invoice.',
       pay:t => [{id:uid(),date:rel(-7),cents:t,method:'e-Transfer'}]}),
   ];
-  return {v:2, edited:false, settings:{...DEFAULT_SETTINGS}, clients, quotes, jobs, invoices, seq:{q:1046, j:315, i:2211}};
+  return {v:3, demo:true, edited:false, created:TODAY, lastBackup:null, settings:{...SAMPLE_SETTINGS}, clients, quotes, jobs, invoices, seq:{q:1046, j:315, i:2211}};
 }
+const validDb = d => !!(d && d.v === 3 && d.settings && ['clients','quotes','jobs','invoices'].every(k => Array.isArray(d[k])) && d.seq);
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); if (d && d.v === 2 && d.edited) return d; } } catch (e) {}
-  return seed();
+  try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); if (validDb(d)) return d.demo && !d.edited ? seed() : d; } } catch (e) {}
+  return null;
 }
-function save() { db.edited = true; try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+function persist() { if (!db) return; try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { toast('Your browser refused to save. Free up space or download a backup now.'); } }
+function save() { if (!db) return; db.edited = true; persist(); }
+function forget() { try { localStorage.removeItem(KEY); } catch (e) {} }
+function requestPersist() { try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {} }
 
-let db = null;
 db = load();
-const state = {view:'overview', sheet:null, returnTo:null, filters:{quotes:'all', invoices:'all'}};
+const state = {view:'overview', sheet:null, returnTo:null, pendingNew:null, offer:null, pendingRestore:null, filters:{quotes:'all', invoices:'all'}};
 const COL = {quote:'quotes', job:'jobs', invoice:'invoices', client:'clients'};
 const byId = (arr, id) => arr.find(x => x.id === id);
 const client = id => byId(db.clients, id) || {name:'No client', address:'', phone:'', email:''};
-const getRec = () => !state.sheet ? null : state.sheet.type === 'settings' ? db.settings : byId(db[COL[state.sheet.type]], state.sheet.id);
+const getRec = () => !state.sheet || !db ? null : state.sheet.type === 'settings' ? db.settings : byId(db[COL[state.sheet.type]], state.sheet.id);
 const blankItem = () => ({id:uid(), desc:'', kind:'labour', qty:1, unit:'hr', rate:75, taxable:true});
+const recordCount = () => db.quotes.length + db.jobs.length + db.invoices.length;
 
 /* ---------- invoice math ---------- */
 const paidOf = inv => inv.payments.reduce((s, p) => s + p.cents, 0);
@@ -580,19 +626,63 @@ const PILLS = {
   invoice: {draft:['Draft','mute'], sent:['Sent','info'], partial:['Part paid','warn'], overdue:['Overdue','bad'], paid:['Paid','ok'], void:['Void','mute']},
 };
 const pill = (type, st) => { const [l, t] = PILLS[type][st]; return `<span class="pill t-${t}">${l}</span>`; };
+const payLine = s => [s.etransfer ? `Pay by e-Transfer to ${s.etransfer}.` : '', s.name ? `Cheques payable to ${s.name}.` : ''].filter(Boolean).join(' ');
 
-/* ---------- main views ---------- */
+/* ---------- chrome ---------- */
 const TABS = [['overview','Overview'],['quotes','Quotes'],['jobs','Jobs'],['invoices','Invoices'],['clients','Clients']];
 function renderHeader() {
-  $('#hdr-biz').textContent = [db.settings.name, db.settings.addr].filter(Boolean).join(' · ');
+  $('#hdr-biz').textContent = db ? [db.settings.name, db.settings.addr].filter(Boolean).join(' · ') : 'Quotes, jobs and invoices';
+  $('#hdr-demo').hidden = !(db && db.demo);
   $('#hdr-settings').innerHTML = ICON.sliders;
+  $('#hdr-settings').hidden = !db;
+  $('#hdr-new').hidden = !db;
 }
 function renderTabs() {
+  if (!db) { $('#tabs').innerHTML = ''; return; }
   const badge = {
     jobs: db.jobs.filter(j => j.status === 'done' && !j.invoiceId).length,
     invoices: db.invoices.filter(i => iInfo(i).status === 'overdue').length,
   };
   $('#tabs').innerHTML = `<div class="wrap tabs-in">${TABS.map(([k, l]) => `<a href="#${k}" class="tab${state.view === k ? ' on' : ''}"${state.view === k ? ' aria-current="page"' : ''}>${ICON[k]}<span>${l}</span>${badge[k] ? `<span class="badge" title="Needs attention">${badge[k]}</span>` : ''}</a>`).join('')}</div>`;
+}
+function renderFooter() {
+  const by = `<span>Fieldbook is free, made by <a href="https://lilmoike.github.io/" target="_blank" rel="noopener">Michael Ricci</a>.</span>`;
+  if (!db) { $('#foot').innerHTML = by; return; }
+  if (db.demo) { $('#foot').innerHTML = `<span>You're exploring sample data. Changes save on this device only.</span><button class="btn sm ghost" data-act="reset" id="reset-btn">Reset sample data</button>${by}`; return; }
+  $('#foot').innerHTML = `<span>Your data is stored only on this device.${STANDALONE ? ' <button class="linkish" data-act="settings">Back it up in Settings.</button>' : ''}</span>${by}`;
+}
+
+/* ---------- views ---------- */
+function viewWelcome() {
+  const opts = Object.entries(PROVINCES).map(([k, v]) => `<option value="${k}"${k === 'ON' ? ' selected' : ''}>${v.name}</option>`).join('');
+  const f = (id, l, type = 'text', ph = '', extra = '') => `<div class="field"><label class="lbl${extra.includes('required') ? ' req' : ''}" for="su-${id}">${l}</label><input class="f" id="su-${id}" name="${id}" type="${type}" placeholder="${ph}" ${extra}></div>`;
+  return `<div class="welcome">
+    <section>
+      <h1>Quotes, jobs and invoices for your trade business</h1>
+      <p class="lede">Price a job, book it, invoice it and get paid, from your phone or computer. Fieldbook is free and there's no account to create.</p>
+      <ul class="promise"><li>Your data stays on this device. Nothing is uploaded.</li><li>Send quotes and invoices as PDFs by text or email</li><li>Sales tax for every province and territory</li><li>Deposits, reminders, late fees and a report of who owes you</li></ul>
+      <form class="setup" id="setup-form" novalidate>
+        <h2 class="sec">Set up your business</h2>
+        <div class="form-grid">
+          ${f('name', 'Business name', 'text', 'e.g. Lakeshore Renovations', 'required autocomplete="organization"')}
+          <div class="field"><label class="lbl" for="su-province">Province or territory</label><select class="f" id="su-province" name="province">${opts}</select></div>
+          ${f('phone', 'Phone', 'tel', '905-555-0123', 'autocomplete="tel"')}
+          ${f('email', 'Email', 'email', 'you@example.com', 'autocomplete="email"')}
+          ${f('etransfer', 'e-Transfer email for payments', 'email', 'Often the same as above')}
+          ${f('addr', 'City and province', 'text', 'Oshawa, ON')}
+          ${f('hst', 'GST/HST number (optional)', 'text', '12345 6789 RT0001')}
+        </div>
+        <p class="small muted" style="margin:0">This appears on your quotes and invoices. You can change it later in Settings.</p>
+        <div><button class="btn primary" type="submit" id="setup-go">Start using Fieldbook</button></div>
+      </form>
+    </section>
+    <aside class="look">
+      <h2 class="sec">Just looking?</h2>
+      <p>Explore a sample handyman business with quotes, jobs and invoices already filled in.</p>
+      <div><button class="btn" data-act="demo" id="demo-btn">Explore with sample data</button></div>
+      ${STANDALONE ? `<h2 class="sec" style="margin-top:12px">Moving from another device?</h2><p>Restore the backup file you downloaded from Fieldbook.</p><div><button class="btn" data-act="restore-pick" id="restore-btn">Restore from backup</button></div>` : ''}
+    </aside>
+  </div>`;
 }
 
 function viewOverview() {
@@ -610,6 +700,9 @@ function viewOverview() {
   const collected = db.invoices.filter(i => !i.void).flatMap(i => i.payments).filter(p => p.date >= cutoff && p.date <= TODAY).reduce((s, p) => s + p.cents, 0);
 
   const att = [];
+  if (!db.demo && STANDALONE && recordCount() > 0 && (!db.lastBackup || daysBetween(db.lastBackup, TODAY) >= 14)) {
+    att.push({tone:'warn', tag:'Back up', text:`Your records live only on this device. ${db.lastBackup ? `Your last backup was ${plural(daysBetween(db.lastBackup, TODAY), 'day')} ago.` : "You haven't made a backup yet."}`, amt:null, btn:`<button class="btn sm" data-act="backup">${ICON.download}Download backup</button>`});
+  }
   overdue.forEach(([i, x]) => att.push({tone:'bad', tag:'Overdue',
     text:`<button class="linkish" data-open="invoice:${i.id}">${esc(i.num)}</button> for ${esc(client(i.clientId).name)} is ${plural(x.daysOver, 'day')} past due<span class="att-sub">${i.lastReminder ? `Last reminder ${relDay(i.lastReminder).toLowerCase()}` : 'No reminder sent yet'}</span>`,
     amt:x.bal, btn:`<button class="btn sm" data-act="i-remind" data-id="${i.id}">${ICON.bell}Copy reminder</button>`}));
@@ -618,8 +711,12 @@ function viewOverview() {
   db.quotes.filter(q => q.status === 'accepted' && !q.jobId).forEach(q => att.push({tone:'ok', tag:'Book it', text:`<strong>${esc(q.num)}</strong> ${esc(q.title)} was accepted and needs a date`, amt:totals(q).total, btn:`<button class="btn sm primary" data-act="q-schedule" data-id="${q.id}">Schedule job</button>`}));
   drafts.forEach(q => att.push({tone:'mute', tag:'Draft', text:`<strong>${esc(q.num)}</strong> ${esc(q.title || 'Untitled quote')} for ${esc(client(q.clientId).name)} hasn't been sent`, amt:totals(q).total, btn:`<button class="btn sm" data-open="quote:${q.id}">Finish quote</button>`}));
 
+  const empty = recordCount() === 0
+    ? `<div class="empty">Nothing here yet. Most people start with a quote.<div style="margin-top:12px"><button class="btn primary" data-act="new-quote">Create your first quote</button></div></div>`
+    : `<div class="empty">You're all caught up.</div>`;
   const dateLine = parse(TODAY).toLocaleDateString('en-CA', {weekday:'long', month:'long', day:'numeric'});
   return `
+  ${db.demo ? `<div class="banner"><span><strong>Sample data.</strong> This is a made-up handyman business so you can try everything out.</span><span class="acts"><button class="btn sm primary" data-act="start-fresh" id="fresh-banner">Set up my own business</button></span></div>` : ''}
   <div class="view-head"><div><h1>Overview</h1><p class="lede">${dateLine} · ${att.length ? `${plural(att.length, 'thing')} need${att.length === 1 ? 's' : ''} attention` : 'Nothing needs attention'}</p></div></div>
   <ol class="flow" aria-label="From quote to paid">
     <li><a class="stage" href="#quotes"><span class="stage-k"><b>1</b>Quoted</span><span class="stage-v">${money(quotedVal)}</span><span class="stage-s">${plural(sent.length, 'quote')} awaiting reply${drafts.length ? ` · ${drafts.length} draft` : ''}</span></a></li>
@@ -629,7 +726,7 @@ function viewOverview() {
   </ol>
   <div class="cols">
     <section><h2 class="sec">Needs attention</h2>
-      <div class="list">${att.length ? att.map(a => `<div class="att"><span class="pill t-${a.tone}">${a.tag}</span><span class="att-text">${a.text}</span><span class="amt">${money(a.amt)}</span>${a.btn}</div>`).join('') : `<div class="empty">You're all caught up.</div>`}</div>
+      <div class="list">${att.length ? att.map(a => `<div class="att"><span class="pill t-${a.tone}">${a.tag}</span><span class="att-text">${a.text}</span><span class="amt">${a.amt == null ? '' : money(a.amt)}</span>${a.btn}</div>`).join('') : empty}</div>
     </section>
     <section><h2 class="sec"><span>Coming up</span><a class="linkish small" href="#jobs">All jobs</a></h2>
       <div class="list">${open.length ? open.slice(0, 6).map(jobRow).join('') : `<div class="empty">No jobs booked. Accepted quotes become jobs here.</div>`}</div>
@@ -658,7 +755,7 @@ const chips = (view, opts) => `<div class="chips" role="group" aria-label="Filte
 function viewQuotes() {
   const f = state.filters.quotes;
   const cnt = s => db.quotes.filter(q => q.status === s).length;
-  const list = db.quotes.filter(q => f === 'all' || q.status === f).sort((a, b) => b.num.localeCompare(a.num));
+  const list = db.quotes.filter(q => f === 'all' || q.status === f).sort((a, b) => b.num.localeCompare(a.num, undefined, {numeric:true}));
   return `<div class="view-head"><div><h1>Quotes</h1><p class="lede">Price the work, send it, and turn accepted quotes into jobs.</p></div><button class="btn primary" data-act="new-quote">New quote</button></div>
   ${chips('quotes', [['all','All',db.quotes.length],['draft','Draft',cnt('draft')],['sent','Sent',cnt('sent')],['accepted','Accepted',cnt('accepted')],['declined','Declined',cnt('declined')]])}
   <div class="list">${list.length ? list.map(q => docRow('quote', q, money(totals(q).total), fmtDate(q.date))).join('') : `<div class="empty">No quotes here yet.</div>`}</div>`;
@@ -677,7 +774,7 @@ function viewJobs() {
 }
 
 function agingHTML(infos) {
-  const B = [['Current'],['1–30 days'],['31–60 days'],['61–90 days'],['90+ days']].map(([l]) => ({l, c:0, n:0}));
+  const B = ['Current','1–30 days','31–60 days','61–90 days','90+ days'].map(l => ({l, c:0, n:0}));
   infos.forEach(([, x]) => {
     if (!isOpen(x) || x.bal <= 0) return;
     const d = x.daysOver, k = d <= 0 ? 0 : d <= 30 ? 1 : d <= 60 ? 2 : d <= 90 ? 3 : 4;
@@ -696,7 +793,7 @@ function viewInvoices() {
   const infos = db.invoices.map(i => [i, iInfo(i)]);
   const test = {all: () => true, unpaid: isOpen, overdue: x => x.status === 'overdue', paid: x => x.status === 'paid', draft: x => x.status === 'draft', void: x => x.status === 'void'};
   const n = k => infos.filter(([, x]) => test[k](x)).length;
-  const list = infos.filter(([, x]) => test[f](x)).sort((a, b) => b[0].num.localeCompare(a[0].num));
+  const list = infos.filter(([, x]) => test[f](x)).sort((a, b) => b[0].num.localeCompare(a[0].num, undefined, {numeric:true}));
   const owed = infos.filter(([, x]) => isOpen(x)).reduce((s, [, x]) => s + x.bal, 0);
   const opts = [['all','All',infos.length],['unpaid','Unpaid',n('unpaid')],['overdue','Overdue',n('overdue')],['paid','Paid',n('paid')],['draft','Draft',n('draft')]];
   if (n('void')) opts.push(['void','Void',n('void')]);
@@ -724,17 +821,17 @@ function viewClients() {
     <span class="c-main"><strong>${esc(c.name || 'Unnamed client')}</strong><small>${esc(c.address)}</small></span>
     <span class="c-date mono">${esc(c.phone)}</span>
     <span class="c-num">${plural(s.jobs, 'job')}</span>
-    <span class="c-amt">${money(s.billed)}${s.owing ? `<small>${money(s.owing)} owing</small>` : '<small>billed</small>'}</span></button>`; }).join('') : `<div class="empty">No clients yet.</div>`}</div>`;
+    <span class="c-amt">${money(s.billed)}${s.owing ? `<small>${money(s.owing)} owing</small>` : '<small>billed</small>'}</span></button>`; }).join('') : `<div class="empty">No clients yet. They're added when you make your first quote.</div>`}</div>`;
 }
 
 const VIEWS = {overview:viewOverview, quotes:viewQuotes, jobs:viewJobs, invoices:viewInvoices, clients:viewClients};
-function renderView() { $('#view').innerHTML = VIEWS[state.view](); }
-function renderAll() { renderHeader(); renderTabs(); renderView(); renderSheet(); }
+function renderView() { $('#view').innerHTML = db ? VIEWS[state.view]() : viewWelcome(); }
+function renderAll() { renderHeader(); renderTabs(); renderView(); renderFooter(); renderSheet(); }
 
 /* ---------- document parts ---------- */
 function paperHead(label, num, right) {
   const s = db.settings;
-  return `<div class="paper-head"><div><div class="from-name">${esc(s.name)}</div><div class="small muted">${esc([s.addr, s.phone].filter(Boolean).join(' · '))}</div>${s.hst ? `<div class="small muted mono">Tax reg. ${esc(s.hst)}</div>` : ''}</div>
+  return `<div class="paper-head"><div>${s.logo ? `<img class="logo-img" src="${s.logo}" alt="">` : ''}<div class="from-name">${esc(s.name || 'Your business')}</div><div class="small muted">${esc([s.addr, s.phone].filter(Boolean).join(' · '))}</div>${s.email ? `<div class="small muted">${esc(s.email)}</div>` : ''}${s.hst ? `<div class="small muted mono">Tax reg. ${esc(s.hst)}</div>` : ''}</div>
     <div class="docid"><div class="doc-label">${label}</div><div class="doc-num mono">${esc(num)}</div>${right || ''}</div></div>`;
 }
 function clientBlock(r, editable, label) {
@@ -742,7 +839,8 @@ function clientBlock(r, editable, label) {
   const sel = editable ? `<select class="f" id="f-client" data-f="clientId" data-rerender aria-label="Client">${db.clients.map(x => `<option value="${x.id}"${x.id === r.clientId ? ' selected' : ''}>${esc(x.name || 'Unnamed client')}</option>`).join('')}</select>
     <button class="linkish small" data-act="new-client" data-for="${state.sheet.type}:${r.id}" style="margin-top:6px">Add a new client</button>` : `<strong>${esc(c.name)}</strong>`;
   return `<div class="contact"><span class="lbl">${label}</span>${sel}<span class="small muted">${esc(c.address)}</span>
-    ${c.phone ? `<span class="copyline small"><span class="mono">${esc(c.phone)}</span><button class="icon-btn sm" data-act="copy" data-text="${esc(c.phone)}" data-what="Phone number copied" aria-label="Copy phone number">${ICON.copy}</button></span>` : ''}</div>`;
+    ${c.phone ? `<span class="copyline small"><span class="mono">${esc(c.phone)}</span><button class="icon-btn sm" data-act="copy" data-text="${esc(c.phone)}" data-what="Phone number copied" aria-label="Copy phone number">${ICON.copy}</button></span>` : ''}
+    ${c.email ? `<span class="small muted">${esc(c.email)}</span>` : ''}</div>`;
 }
 function titleBlock(r, editable, ph) {
   return `<div class="title-wrap">${editable ? `<input class="f title" id="f-title" data-f="title" value="${esc(r.title)}" placeholder="${ph}" aria-label="Job title">` : `<h2 class="doc-title">${esc(r.title || 'Untitled')}</h2>`}</div>`;
@@ -793,7 +891,22 @@ function notesBlock(r, editable, label, ph) {
 }
 const bar = (num, pillHTML, sub) => `<div class="sheet-bar"><button class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button><div class="sb-title"><span>${esc(num)}</span>${pillHTML}</div><span class="sb-sub">${sub || ''}</span></div>`;
 const delBtn = what => `<button class="btn danger" data-act="del" id="del-btn">Delete ${what}</button>`;
-const docTools = (extra = '') => `<div class="doc-tools">${extra}<button class="btn sm" data-act="copy-doc">${ICON.copy}Copy as text</button>${canPrint ? `<button class="btn sm" data-act="print">${ICON.print}Print or save PDF</button>` : ''}</div>`;
+function docTools(type, r, extra = '') {
+  const pdf = STANDALONE && hasPDF();
+  const share = pdf && canShareFiles();
+  const c = client(r.clientId);
+  let h = '';
+  if (share) h += `<button class="btn sm primary" data-act="pdf-share">${ICON.share}Share PDF</button>`;
+  if (pdf) h += `<button class="btn sm${share ? '' : ' primary'}" data-act="pdf-download">${ICON.download}Download PDF</button>`;
+  if (STANDALONE && type !== 'job' && c.email) h += `<button class="btn sm" data-act="email">${ICON.mail}Email to client</button>`;
+  h += extra + `<button class="btn sm" data-act="copy-doc">${ICON.copy}Copy as text</button>`;
+  if (STANDALONE) h += `<button class="btn sm" data-act="print">${ICON.print}Print</button>`;
+  const note = STANDALONE ? '' : `<p class="lock-note">PDFs, sharing and printing work in the full app at <a href="https://lilmoike.github.io/fieldbook/" target="_blank" rel="noopener">lilmoike.github.io/fieldbook</a>.</p>`;
+  const draft = (type === 'quote' && r.status === 'draft') || (type === 'invoice' && !r.sent && !r.void);
+  const offer = state.offer && state.offer.id === r.id && draft
+    ? `<div class="banner ok"><span>Did you send it? Mark ${esc(r.num)} as sent so Fieldbook can track it.</span><span class="acts"><button class="btn sm primary" data-act="${type === 'quote' ? 'q-send' : 'i-send'}">Mark as sent</button><button class="btn sm ghost" data-act="offer-dismiss">Not yet</button></span></div>` : '';
+  return `<div class="doc-tools">${h}</div>${note}${offer}`;
+}
 function depositBlock(src, type) {
   const qid = type === 'quote' ? src.id : src.quoteId;
   const jid = type === 'job' ? src.id : src.jobId;
@@ -816,9 +929,10 @@ function sheetQuote(q) {
   else if (q.status === 'accepted') foot = `<span class="spacer"></span>${job ? `<button class="btn primary" data-open="job:${job.id}">Open ${esc(job.num)}</button>` : `<button class="btn primary" data-act="q-schedule">Schedule job</button>`}`;
   else foot = `${delBtn('quote')}<span class="spacer"></span><button class="btn" data-act="q-draft">Reopen as draft</button>`;
   const sub = q.status === 'sent' && q.sentOn ? `Sent ${relDay(q.sentOn).toLowerCase()}` : q.status === 'draft' ? 'Changes save automatically' : '';
+  const s = db.settings;
   return `${bar(q.num, pill('quote', q.status), sub)}
   <div class="sheet-body">
-    ${docTools()}
+    ${docTools('quote', q)}
     ${q.status === 'sent' ? `<p class="lock-note">This quote has been sent, so it's locked. Choose <strong>Edit quote</strong> to revise it and send it again.</p>` : ''}
     <article class="paper">
       ${paperHead('Quote', q.num, `<div class="small muted">Issued ${fmtLong(q.date)}</div><div class="small muted">Valid until ${fmtLong(addDays(q.date, 30))}</div>`)}
@@ -829,7 +943,7 @@ function sheetQuote(q) {
       ${itemsBlock(q, ed)}
       ${paperFoot(q, 'quote', left)}
       ${notesBlock(q, ed, 'Notes & exclusions', 'What is and isn’t included, timing, access…')}
-      <div class="terms"><span>Prices in CAD. ${taxSummary(q.taxes || docTaxes())} applies where marked. Quote valid for 30 days.</span>${+db.settings.depositPct > 0 ? `<span>A ${fmtRate(db.settings.depositPct)}% deposit may be requested to book the work.</span>` : ''}<span>To accept, reply to this quote or call ${esc(db.settings.phone)}.</span></div>
+      <div class="terms"><span>Prices in CAD. ${taxSummary(q.taxes || docTaxes())} applies where marked. Quote valid for 30 days.</span>${+s.depositPct > 0 ? `<span>A ${fmtRate(s.depositPct)}% deposit may be requested to book the work.</span>` : ''}${s.phone ? `<span>To accept, reply to this quote or call ${esc(s.phone)}.</span>` : ''}</div>
     </article>
   </div>
   <div class="sheet-foot">${foot}</div>`;
@@ -847,7 +961,7 @@ function sheetJob(j) {
   else foot = `<span class="spacer"></span><button class="btn primary" data-open="invoice:${invc.id}">Open ${esc(invc.num)}</button>`;
   return `${bar(j.num, pill('job', j.status), relDay(j.date))}
   <div class="sheet-body">
-    ${docTools()}
+    ${docTools('job', j)}
     <article class="paper">
       ${paperHead('Work order', j.num, `<label class="small muted" for="f-date" style="display:block;margin-top:6px">Scheduled</label><input class="f mono" type="date" id="f-date" data-f="date" data-rerender value="${j.date}" style="max-width:170px;text-align:right">`)}
       <div class="meta">${clientBlock(j, ed && !quote, 'Client & site')}
@@ -905,9 +1019,10 @@ function sheetInvoice(inv) {
         <button class="btn" data-act="pay">Record payment</button></div>` : ''}
       ${lateFeeHTML(inv, x)}
     </section>`;
+  const pl = payLine(s);
   return `${bar(inv.num, pill('invoice', x.status), sub)}
   <div class="sheet-body">
-    ${docTools(isOpen(x) ? `<button class="btn sm" data-act="i-remind">${ICON.bell}Copy ${x.status === 'overdue' ? 'overdue' : 'friendly'} reminder</button>` : '')}
+    ${docTools('invoice', inv, isOpen(x) ? `<button class="btn sm" data-act="i-remind">${ICON.bell}Copy ${x.status === 'overdue' ? 'overdue' : 'friendly'} reminder</button>` : '')}
     ${x.status === 'void' ? `<p class="lock-note">This invoice was voided. It stays on file so your invoice numbers have no gaps, but it no longer counts toward what you're owed.</p>` : isOpen(x) ? `<p class="lock-note">Sent invoices are locked. ${canVoid ? 'Choose <strong>Edit invoice</strong> to change it, or void it and start a new one.' : 'It has payments recorded, so it can no longer be edited.'}</p>` : ''}
     <article class="paper">
       ${paperHead(inv.kind === 'deposit' ? 'Deposit' : 'Invoice', inv.num, `<div class="small muted">Issued ${fmtLong(inv.date)}</div><div class="small${x.status === 'overdue' ? '' : ' muted'}"${x.status === 'overdue' ? ' style="color:var(--bad);font-weight:600"' : ''}>${+inv.dueDays ? `Due ${fmtLong(x.due)}` : 'Due on receipt'}</div>${terms}`)}
@@ -917,7 +1032,7 @@ function sheetInvoice(inv) {
       ${itemsBlock(inv, ed)}
       ${paperFoot(inv, 'invoice', left)}
       ${notesBlock(inv, ed, 'Notes', 'Thank-you note, warranty info…')}
-      <div class="terms"><span>Pay by e-Transfer to <span class="mono">${esc(s.etransfer)}</span> (auto-deposit on). Cheques payable to ${esc(s.name)}.</span>${+s.lateRate > 0 && inv.kind !== 'deposit' ? `<span>Overdue balances are charged ${fmtRate(s.lateRate)}% per month.</span>` : ''}</div>
+      ${pl || +s.lateRate > 0 ? `<div class="terms">${pl ? `<span>${esc(pl)}</span>` : ''}${+s.lateRate > 0 && inv.kind !== 'deposit' ? `<span>Overdue balances are charged ${fmtRate(s.lateRate)}% per month.</span>` : ''}</div>` : ''}
     </article>
     ${payments}
     <section class="panel"><h3>Activity</h3><ol class="log">${[...(inv.log || [])].reverse().map(e => `<li><span class="mono">${fmtDate(e.date)}</span><span>${esc(e.text)}</span></li>`).join('')}</ol></section>
@@ -934,8 +1049,10 @@ function sheetClient(c) {
     ...db.invoices.filter(i => i.clientId === c.id).map(i => ({t:'invoice', r:i, d:i.date, st:pill('invoice', iInfo(i).status), amt:totals(i).total})),
   ].sort((a, b) => b.d.localeCompare(a.d));
   const field = (k, l, type = 'text', ph = '') => `<div class="field"><label class="lbl" for="cl-${k}">${l}</label><input class="f" id="cl-${k}" type="${type}" data-f="${k}" value="${esc(c[k])}" placeholder="${ph}"></div>`;
+  const nextLabel = {quote:'Continue to the quote', job:'Continue to the job', invoice:'Continue to the invoice'}[state.pendingNew];
   const foot = back
     ? `<span class="spacer"></span><button class="btn primary" data-act="close">Use for ${esc(back.num)}</button>`
+    : nextLabel ? `<span class="spacer"></span><button class="btn primary" data-act="close">${nextLabel}</button>`
     : `${s.records ? '' : delBtn('client')}<span class="spacer"></span><button class="btn primary" data-act="new-quote" data-client="${c.id}">New quote</button>`;
   return `${bar(c.name || 'New client', '', s.owing ? `${money(s.owing)} owing` : '')}
   <div class="sheet-body">
@@ -951,11 +1068,14 @@ function sheetClient(c) {
 
 function sheetSettings(s) {
   const f = (k, l, type = 'text', ph = '', extra = '') => `<div class="field"><label class="lbl" for="st-${k}">${l}</label><input class="f" id="st-${k}" type="${type}" data-f="${k}" ${extra} value="${esc(s[k])}" placeholder="${ph}"></div>`;
+  const seqF = (k, l) => `<div class="field"><label class="lbl" for="sq-${k}">${l}</label><div class="seq"><span class="mono muted">${PREFIX[k]}</span><input class="f num" id="sq-${k}" type="number" min="1" step="1" inputmode="numeric" data-seq="${k}" value="${db.seq[k]}"></div></div>`;
   const p = PROVINCES[s.province] || PROVINCES.ON;
+  const pr = state.pendingRestore;
   return `${bar('Settings', '', '')}
   <div class="sheet-body">
     <section class="panel" style="margin-top:0"><h3>Your business</h3>
       <div class="form-grid">${f('name', 'Business name')}${f('addr', 'City and province')}${f('phone', 'Phone', 'tel')}${f('email', 'Email', 'email')}${f('hst', 'GST/HST registration number', 'text', '12345 6789 RT0001')}${f('etransfer', 'e-Transfer email', 'email')}</div>
+      <div class="field" style="margin-top:16px"><span class="lbl">Logo</span><div class="logo-prev">${s.logo ? `<img src="${s.logo}" alt="Your logo">` : '<span class="small muted">No logo yet. It appears on your quotes, invoices and PDFs.</span>'}<button class="btn sm" data-act="logo-pick">${s.logo ? 'Change logo' : 'Upload logo'}</button>${s.logo ? '<button class="btn sm danger" data-act="logo-rm">Remove</button>' : ''}</div></div>
     </section>
     <section class="panel"><h3>Sales tax</h3>
       <div class="form-grid">
@@ -971,6 +1091,14 @@ function sheetSettings(s) {
         ${f('depositPct', 'Deposit, % of quote total', 'number', '30', 'data-num step="5" min="0" max="100" inputmode="decimal"')}
       </div>
       <p class="small muted">Set the late fee or deposit to 0 to turn it off.</p>
+      <div class="form-grid" style="margin-top:14px">${seqF('q', 'Next quote number')}${seqF('i', 'Next invoice number')}${seqF('j', 'Next job number')}</div>
+      <p class="small muted">Switching from another system? Set these to carry on from your last numbers.</p>
+    </section>
+    <section class="panel"><h3>Your data</h3>
+      <p style="margin-top:0">Everything is saved in this browser on this device, and nothing is uploaded. Download a backup regularly. You can use it to move to a new phone or computer.</p>
+      <p class="small muted">Last backup: ${db.lastBackup ? fmtLong(db.lastBackup) : 'never'}</p>
+      <div class="data-row">${STANDALONE ? `<button class="btn" data-act="backup">${ICON.download}Download backup</button><button class="btn" data-act="restore-pick">Restore from backup</button>` : '<span class="small muted">Backups work in the full app at lilmoike.github.io/fieldbook.</span>'}<span class="spacer"></span>${db.demo ? `<button class="btn primary" data-act="start-fresh" id="fresh-settings">Set up my own business</button>` : `<button class="btn danger" data-act="erase" id="erase-btn">Erase all data</button>`}</div>
+      ${pr ? `<div class="restore-confirm"><strong>Replace everything on this device with this backup?</strong><p class="small">It has ${plural(pr.clients.length, 'client')}, ${plural(pr.quotes.length, 'quote')} and ${plural(pr.invoices.length, 'invoice')} for ${esc(pr.settings.name || 'an unnamed business')}. What's on this device now will be overwritten.</p><div class="data-row"><button class="btn primary" data-act="restore-confirm">Replace my data</button><button class="btn" data-act="restore-cancel">Cancel</button></div></div>` : ''}
     </section>
   </div>
   <div class="sheet-foot"><span class="spacer"></span><button class="btn primary" data-act="close">Done</button></div>`;
@@ -990,6 +1118,7 @@ function renderSheet() {
 }
 function openSheet(type, id) {
   if (state.sheet && state.sheet.type === 'client' && type !== 'client') cleanupClient();
+  if (!state.offer || state.offer.id !== id) state.offer = null;
   state.sheet = {type, id};
   renderSheet();
   const b = $('#sheet .sheet-body'); if (b) b.scrollTop = 0;
@@ -997,30 +1126,159 @@ function openSheet(type, id) {
 }
 function cleanupClient() {
   const c = getRec();
-  if (c && !c.name.trim() && !clientStats(c).records) { db.clients = db.clients.filter(x => x !== c); save(); }
+  if (c && !c.name.trim() && !clientStats(c).records) { db.clients = db.clients.filter(x => x !== c); save(); return true; }
+  return false;
 }
 function closeSheet() {
   if (state.sheet && state.sheet.type === 'client') {
     const c = getRec();
-    cleanupClient();
+    const removed = cleanupClient();
     if (state.returnTo) {
       const back = byId(db[COL[state.returnTo.type]], state.returnTo.id);
       const rt = state.returnTo; state.returnTo = null;
-      if (back) { if (c && byId(db.clients, c.id)) { back.clientId = c.id; save(); } renderTabs(); renderView(); openSheet(rt.type, rt.id); return; }
+      if (back) { if (!removed && c) { back.clientId = c.id; save(); } renderTabs(); renderView(); openSheet(rt.type, rt.id); return; }
+    }
+    if (state.pendingNew) {
+      const kind = state.pendingNew; state.pendingNew = null;
+      if (!removed && c) { state.sheet = null; NEW[kind](c.id); return; }
     }
   }
-  state.sheet = null; state.returnTo = null;
-  renderSheet(); renderHeader(); renderTabs(); renderView();
+  if (state.sheet && state.sheet.type === 'settings') state.pendingRestore = null;
+  state.sheet = null; state.returnTo = null; state.pendingNew = null; state.offer = null;
+  renderSheet(); renderHeader(); renderTabs(); renderView(); renderFooter();
+}
+
+/* ---------- PDF ---------- */
+const PDF_MAP = {'″':'"', '′':"'", '−':'-', '–':'-', '—':'-', '‘':"'", '’':"'", '“':'"', '”':'"', '…':'...', '•':'-', ' ':' ', ' ':' '};
+const pdfSafe = s => String(s ?? '').replace(/[′″−–—‘’“”…•  ]/g, ch => PDF_MAP[ch]).replace(/[^\n\x20-\x7E\xA1-\xFF]/g, '');
+const pdfName = r => `${r.num} ${db.settings.name || ''}`.trim().replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ') + '.pdf';
+function pdfFor(type, r) {
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'letter'});
+  const s = db.settings, c = client(r.clientId), t = totals(r), x = type === 'invoice' ? iInfo(r) : null;
+  const W = 612, H = 792, M = 50, R = W - M, T = pdfSafe;
+  const ACC = [194, 65, 12], INK = [24, 35, 43], MUT = [92, 102, 110], LINE = [208, 214, 206], OK = [47, 125, 59];
+  const font = (style, size, color) => { doc.setFont('helvetica', style); doc.setFontSize(size); doc.setTextColor(color[0], color[1], color[2]); };
+  let y = M, lx = M;
+  if (s.logo) { try { const p = doc.getImageProperties(s.logo); const h = 46, w = Math.min(150, p.width * h / p.height); doc.addImage(s.logo, 'PNG', M, y - 6, w, h); lx = M + w + 14; } catch (e) {} }
+  font('bold', 15, INK); doc.text(T(s.name || 'Your business'), lx, y + 10);
+  font('normal', 9, MUT);
+  const from = [s.addr, [s.phone, s.email].filter(Boolean).join('    '), s.hst ? `GST/HST reg. ${s.hst}` : ''].filter(Boolean);
+  from.forEach((l, i) => doc.text(T(l), lx, y + 25 + i * 12));
+  const label = {quote:'QUOTE', job:'WORK ORDER', invoice: r.kind === 'deposit' ? 'DEPOSIT INVOICE' : 'INVOICE'}[type];
+  font('bold', 22, ACC); doc.text(label, R, y + 12, {align:'right'});
+  font('bold', 11, INK); doc.text(T(r.num), R, y + 28, {align:'right'});
+  font('normal', 9, MUT);
+  const dates = type === 'quote' ? [`Issued ${fmtLong(r.date)}`, `Valid until ${fmtLong(addDays(r.date, 30))}`]
+    : type === 'invoice' ? [`Issued ${fmtLong(r.date)}`, +r.dueDays ? `Due ${fmtLong(x.due)}` : 'Due on receipt'] : [`Scheduled ${fmtLong(r.date)}`];
+  dates.forEach((l, i) => doc.text(T(l), R, y + 42 + i * 12, {align:'right'}));
+  y += Math.max(46, 25 + from.length * 12, 42 + dates.length * 12) + 8;
+  doc.setDrawColor(INK[0], INK[1], INK[2]); doc.setLineWidth(1.4); doc.line(M, y, R, y); y += 22;
+
+  font('bold', 8, MUT); doc.text({quote:'PREPARED FOR', job:'CLIENT & SITE', invoice:'BILL TO'}[type], M, y);
+  font('bold', 11, INK); doc.text(T(c.name), M, y + 15);
+  font('normal', 9.5, MUT);
+  const cl = [c.address, c.phone, c.email].filter(Boolean);
+  cl.forEach((l, i) => doc.text(T(l), M, y + 29 + i * 12));
+  const refs = [];
+  const job = r.jobId && byId(db.jobs, r.jobId), q = r.quoteId && byId(db.quotes, r.quoteId);
+  if (type === 'invoice' && job) refs.push(`Work order ${job.num}`);
+  if (type !== 'quote' && q) refs.push(`Quote ${q.num}`);
+  if (refs.length) { font('bold', 8, MUT); doc.text('REFERENCE', W / 2 + 40, y); font('normal', 9.5, INK); refs.forEach((l, i) => doc.text(T(l), W / 2 + 40, y + 15 + i * 12)); }
+  y += 29 + Math.max(cl.length, refs.length) * 12 + 16;
+  if (r.title) { font('bold', 14, INK); const tl = doc.splitTextToSize(T(r.title), R - M); doc.text(tl, M, y); y += tl.length * 17 + 6; }
+
+  const cQty = M + 330, cRate = M + 420;
+  const head = () => {
+    font('bold', 8, MUT); doc.text('DESCRIPTION', M, y); doc.text('QTY', cQty, y, {align:'right'}); doc.text('RATE', cRate, y, {align:'right'}); doc.text('AMOUNT', R, y, {align:'right'});
+    y += 6; doc.setDrawColor(INK[0], INK[1], INK[2]); doc.setLineWidth(0.8); doc.line(M, y, R, y); y += 16;
+  };
+  const room = need => { if (y + need > H - M - 30) { doc.addPage(); y = M; return true; } return false; };
+  head();
+  r.items.forEach(it => {
+    font('normal', 10, INK);
+    const dl = doc.splitTextToSize(T(it.desc || '(no description)'), 270);
+    const sub = [KINDS[it.kind], it.taxable === false ? 'no tax' : ''].filter(Boolean).join(' · ');
+    const bottom = (dl.length - 1) * 12 + (sub ? 12 : 0) + 8;
+    if (room(bottom + 18)) head();
+    font('normal', 10, INK);
+    doc.text(dl, M, y);
+    doc.text(T(`${+it.qty} ${it.unit || ''}`.trim()), cQty, y, {align:'right'});
+    doc.text(T(money(it.rate * 100)), cRate, y, {align:'right'});
+    doc.text(T(money(lineCents(it))), R, y, {align:'right'});
+    if (sub) { font('normal', 8, MUT); doc.text(T(sub), M, y + dl.length * 12); }
+    y += bottom;
+    doc.setDrawColor(LINE[0], LINE[1], LINE[2]); doc.setLineWidth(0.5); doc.line(M, y, R, y);
+    y += 16;
+  });
+
+  const rows = [['Subtotal', money(t.sub)]];
+  if (t.disc) rows.push([`Discount${r.discount.mode === 'pct' ? ` (${fmtRate(r.discount.value)}%)` : ''}`, '-' + money(t.disc)]);
+  if (t.taxableSub > 0) t.taxes.forEach(tx => rows.push([`${tx.label} ${fmtRate(tx.rate)}%`, money(tx.cents)]));
+  const grand = [['Total', money(t.total), 'big']];
+  if (x) {
+    x.deps.forEach(d => grand.push([`Deposit received (${d.inv.num})`, '-' + money(d.cents), 'credit']));
+    if (x.paid) grand.push(['Paid', '-' + money(x.paid), 'credit']);
+    if (x.paid || x.dep) grand.push(['Balance due', money(Math.max(0, x.bal)), 'big']);
+  }
+  room(rows.length * 15 + grand.length * 20 + 30);
+  const tx0 = R - 230, ty = y;
+  font('normal', 10, INK);
+  rows.forEach(([l, v]) => { doc.text(T(l), tx0, y); doc.text(T(v), R, y, {align:'right'}); y += 15; });
+  doc.setDrawColor(INK[0], INK[1], INK[2]); doc.setLineWidth(1.2); doc.line(tx0, y - 5, R, y - 5); y += 10;
+  grand.forEach(([l, v, k]) => { font(k === 'big' ? 'bold' : 'normal', k === 'big' ? 12.5 : 10, k === 'credit' ? OK : INK); doc.text(T(l), tx0, y); doc.text(T(v), R, y, {align:'right'}); y += k === 'big' ? 20 : 15; });
+  if (x && x.status === 'paid') { font('bold', 30, OK); doc.text('PAID', M + 20, ty + 30, {angle:12}); font('normal', 9, OK); doc.text(T(`Thank you. Paid ${fmtLong(lastPayDate(r) || TODAY)}`), M + 20, ty + 52); }
+  y += 8;
+
+  const block = (lab, text) => {
+    if (!text) return;
+    font('normal', 9.5, INK);
+    const ls = doc.splitTextToSize(T(text), R - M);
+    room(ls.length * 12 + 26);
+    font('bold', 8, MUT); doc.text(lab, M, y); y += 13;
+    font('normal', 9.5, INK); doc.text(ls, M, y); y += ls.length * 12 + 12;
+  };
+  block(type === 'quote' ? 'NOTES & EXCLUSIONS' : type === 'job' ? 'SITE NOTES' : 'NOTES', r.notes);
+  if (type === 'job' && r.checklist.length) block('CHECKLIST', r.checklist.map(ch => `[${ch.done ? 'x' : '  '}] ${ch.t}`).join('\n'));
+  if (type === 'quote') block('TERMS', [`Prices in CAD. ${taxSummary(r.taxes || docTaxes())} applies where marked. This quote is valid for 30 days.`, +s.depositPct > 0 ? `A ${fmtRate(s.depositPct)}% deposit may be requested to book the work.` : '', `To accept, reply to this quote${s.phone ? ` or call ${s.phone}` : ''}.`].filter(Boolean).join(' '));
+  if (type === 'invoice') block('HOW TO PAY', [payLine(s), +s.lateRate > 0 && r.kind !== 'deposit' ? `Overdue balances are charged ${fmtRate(s.lateRate)}% per month.` : '', r.kind === 'deposit' ? 'This deposit is credited in full on your final invoice.' : ''].filter(Boolean).join(' ') || 'Thank you for your business.');
+
+  const n = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= n; i++) {
+    doc.setPage(i); font('normal', 8, MUT);
+    doc.text(T(`${s.name || ''}  ·  ${r.num}`), M, H - 28);
+    doc.text(`Page ${i} of ${n}`, R, H - 28, {align:'right'});
+  }
+  return doc;
+}
+function shareMessage(type, r) {
+  const s = db.settings, c = client(r.clientId), t = totals(r);
+  const hi = `Hi ${c.name},`;
+  let body;
+  if (type === 'quote') body = `Here's my quote${r.title ? ` for ${r.title}` : ''}. The total is ${money(t.total)}, and it's valid until ${fmtLong(addDays(r.date, 30))}.\n\nReply to accept${s.phone ? `, or call me at ${s.phone} with any questions` : ''}.`;
+  else if (type === 'invoice') { const x = iInfo(r); body = `Here's invoice ${r.num}${r.title ? ` for ${r.title}` : ''}. The amount due is ${money(Math.max(0, x.bal))}${+r.dueDays ? `, due ${fmtLong(x.due)}` : ''}.${payLine(s) ? `\n\n${payLine(s)}` : ''}`; }
+  else body = `Here's the work order${r.title ? ` for ${r.title}` : ''}, scheduled for ${fmtLong(r.date)}.`;
+  return `${hi}\n\n${body}\n\nThe PDF is attached.\n\nThanks,\n${s.name}${s.phone ? `\n${s.phone}` : ''}`;
+}
+function afterSend(type, r) {
+  const draft = (type === 'quote' && r.status === 'draft') || (type === 'invoice' && !r.sent && !r.void);
+  if (draft) { state.offer = {id: r.id}; renderSheet(); }
+}
+function downloadBlob(name, blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 }
 
 /* ---------- actions ---------- */
 let toastTimer;
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2800); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200); }
 function commit() { save(); renderTabs(); renderView(); renderSheet(); }
 function arm(btn, label) {
   if (btn.dataset.armed) return true;
-  const old = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label; btn.classList.add('armed');
-  setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = old; btn.classList.remove('armed'); } }, 3500);
+  const old = btn.innerHTML; btn.dataset.armed = '1'; btn.textContent = label; btn.classList.add('armed');
+  setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.innerHTML = old; btn.classList.remove('armed'); } }, 3500);
   return false;
 }
 function copyText(text, msg) {
@@ -1048,51 +1306,121 @@ function docText(type, r) {
   if (x) {
     x.deps.forEach(d => out.push(`Deposit received (${d.inv.num}): -${money(d.cents)}`));
     if (x.paid) out.push(`Paid: -${money(x.paid)}`);
-    out.push(`Balance due: ${money(Math.max(0, x.bal))}`, '', `Pay by e-Transfer to ${s.etransfer}`);
+    out.push(`Balance due: ${money(Math.max(0, x.bal))}`);
+    if (payLine(s)) out.push('', payLine(s));
     if (+s.lateRate > 0 && r.kind !== 'deposit') out.push(`Overdue balances are charged ${fmtRate(s.lateRate)}% per month.`);
   }
   if (type === 'quote') out.push('', 'Valid for 30 days. Reply to accept.');
   if (r.notes) out.push('', r.notes);
-  if (s.hst) out.push('', `Tax reg. ${s.hst}`);
+  if (s.hst) out.push('', `GST/HST reg. ${s.hst}`);
   return out.join('\n');
 }
 function reminderText(inv) {
   const s = db.settings, x = iInfo(inv), c = client(inv.clientId);
-  const what = inv.title ? `for ${inv.title}` : '';
+  const what = inv.title ? ` for ${inv.title}` : '';
   const out = [`Hi ${c.name},`, ''];
   if (x.status === 'overdue') {
-    out.push(`Invoice ${inv.num} ${what} was due on ${fmtLong(x.due)} and is now ${plural(x.daysOver, 'day')} past due. The balance owing is ${money(x.bal)}.`.replace('  ', ' '));
+    out.push(`Invoice ${inv.num}${what} was due on ${fmtLong(x.due)} and is now ${plural(x.daysOver, 'day')} past due. The balance owing is ${money(x.bal)}.`);
     if (+s.lateRate > 0 && inv.kind !== 'deposit') out.push('', `As per our terms, overdue balances are charged ${fmtRate(s.lateRate)}% per month.`);
   } else {
-    out.push(`A friendly reminder that invoice ${inv.num} ${what} is due ${daysBetween(TODAY, x.due) === 0 ? 'today' : `on ${fmtLong(x.due)}`}. The balance is ${money(x.bal)}.`.replace('  ', ' '));
+    out.push(`A friendly reminder that invoice ${inv.num}${what} is due ${daysBetween(TODAY, x.due) === 0 ? 'today' : `on ${fmtLong(x.due)}`}. The balance is ${money(x.bal)}.`);
   }
-  out.push('', `You can pay by e-Transfer to ${s.etransfer}. If you've already sent payment, thank you, and please ignore this note.`, '', s.name, s.phone);
+  out.push('', `${payLine(s) ? payLine(s) + ' ' : ''}If you've already sent payment, thank you, and please ignore this note.`, '', s.name);
+  if (s.phone) out.push(s.phone);
   return out.join('\n');
 }
+function needClient(kind) {
+  const c = {id:uid(), name:'', phone:'', email:'', address:''};
+  db.clients.push(c); save();
+  state.pendingNew = kind;
+  openSheet('client', c.id); const n = $('#cl-name'); if (n) n.focus();
+  toast(`Add the client first. Then continue to the ${kind}.`);
+}
+const lastClientId = () => db.clients.length ? db.clients[db.clients.length - 1].id : null;
 function newQuote(clientId) {
   const q = {id:uid(), num:'Q-' + db.seq.q++, clientId, title:'', date:TODAY, status:'draft', items:[blankItem()], taxes:docTaxes(), discount:null, notes:'', jobId:null};
   db.quotes.push(q); save(); renderTabs(); renderView(); openSheet('quote', q.id);
   const t = $('#f-title'); if (t) t.focus();
   toast(`Started ${q.num}`);
 }
+function newJob(clientId) {
+  const j = {id:uid(), num:'J-' + db.seq.j++, clientId, quoteId:null, title:'', date:rel(1), status:'scheduled', items:[blankItem()], taxes:docTaxes(), discount:null, checklist:[], notes:'', invoiceId:null};
+  db.jobs.push(j); save(); renderTabs(); renderView(); openSheet('job', j.id); toast(`Booked ${j.num} for tomorrow`);
+}
+function newInvoice(clientId) {
+  const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'standard', clientId, jobId:null, quoteId:null, title:'', date:TODAY, dueDays:+db.settings.terms, sent:false, everSent:false, void:false, items:[blankItem()], taxes:docTaxes(), discount:null, notes:'', payments:[], log:[ev(TODAY, 'Created')]};
+  db.invoices.push(inv); save(); renderTabs(); renderView(); openSheet('invoice', inv.id); toast(`Started ${inv.num}`);
+}
+const NEW = {quote:newQuote, job:newJob, invoice:newInvoice};
 function invoiceFromJob(j) {
   const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'standard', clientId:j.clientId, jobId:j.id, quoteId:j.quoteId || null, title:j.title, date:TODAY, dueDays:+db.settings.terms, sent:false, everSent:false, void:false,
     items:clone(j.items), taxes:taxesOf(j), discount:j.discount ? {...j.discount} : null, notes:'Thanks for your business.', payments:[], log:[ev(TODAY, `Created from ${j.num}`)]};
   db.invoices.filter(d => d.kind === 'deposit' && !d.void && !d.payments.length && ((inv.quoteId && d.quoteId === inv.quoteId) || d.jobId === j.id)).forEach(d => {
-    d.void = true; d.log.push(ev(TODAY, `Voided: unpaid, replaced by ${inv.num}`)); inv.log.push(ev(TODAY, `Unpaid deposit ${d.num} voided`));
+    d.void = true; (d.log = d.log || []).push(ev(TODAY, `Voided: unpaid, replaced by ${inv.num}`)); inv.log.push(ev(TODAY, `Unpaid deposit ${d.num} voided`));
   });
+  db.invoices.push(inv);
   const deps = depositsFor(inv);
   if (deps.length) inv.log.push(ev(TODAY, `Deposit ${deps.map(d => d.inv.num).join(', ')} credited`));
-  db.invoices.push(inv); j.invoiceId = inv.id; save(); renderTabs(); renderView(); openSheet('invoice', inv.id);
+  j.invoiceId = inv.id; save(); renderTabs(); renderView(); openSheet('invoice', inv.id);
   toast(`${inv.num} drafted from ${j.num}${deps.length ? ', deposit credited' : ''}`);
 }
+function readLogo(file) {
+  const fr = new FileReader();
+  fr.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 600 / img.width, 240 / img.height);
+      const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      db.settings.logo = cv.toDataURL('image/png'); save(); renderSheet(); toast('Logo added');
+    };
+    img.onerror = () => toast("That file couldn't be read as an image. Try a PNG or JPG.");
+    img.src = fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+function readBackup(file) {
+  const fr = new FileReader();
+  fr.onload = () => {
+    let d = null;
+    try { d = JSON.parse(fr.result); } catch (e) {}
+    if (!validDb(d)) { toast("That file isn't a Fieldbook backup."); return; }
+    if (!db) { db = d; db.edited = true; persist(); requestPersist(); location.hash = 'overview'; route(); toast(`Restored ${d.settings.name || 'your business'}`); return; }
+    state.pendingRestore = d; renderSheet();
+  };
+  fr.readAsText(file);
+}
+function goWelcome(msg) {
+  forget(); db = null; state.sheet = null; state.returnTo = null; state.pendingNew = null; state.offer = null; state.pendingRestore = null;
+  renderSheet();
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  route(); window.scrollTo(0, 0);
+  if (msg) toast(msg);
+}
+
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'setup-form') return;
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const v = k => String(fd.get(k) || '').trim();
+  if (!v('name')) { toast('Enter your business name to get started'); $('#su-name').focus(); return; }
+  db = fresh({name:v('name'), province:v('province') || 'ON', phone:v('phone'), email:v('email'), etransfer:v('etransfer') || v('email'), addr:v('addr'), hst:v('hst')});
+  save(); requestPersist();
+  location.hash = 'overview'; route(); window.scrollTo(0, 0);
+  toast(`Welcome, ${db.settings.name}. Start with your first quote.`);
+});
 
 document.addEventListener('click', e => {
   const o = e.target.closest('[data-open]');
-  if (o) { const [t, id] = o.dataset.open.split(':'); openSheet(t, id); return; }
+  if (o && db) { const [t, id] = o.dataset.open.split(':'); openSheet(t, id); return; }
   const a = e.target.closest('[data-act]');
   if (!a) return;
   const act = a.dataset.act;
+  if (act === 'demo') { db = seed(); persist(); location.hash = 'overview'; route(); window.scrollTo(0, 0); toast('Loaded a sample business. Try anything.'); return; }
+  if (act === 'restore-pick') { $('#restore-file').click(); return; }
+  if (act === 'copyfall-close') { $('#copyfall').hidden = true; return; }
+  if (!db) return;
   const rec = getRec();
   const type = state.sheet && state.sheet.type;
   const log = (r, text) => { (r.log = r.log || []).push(ev(TODAY, text)); };
@@ -1102,20 +1430,12 @@ document.addEventListener('click', e => {
     case 'print': window.print(); break;
     case 'filter': state.filters[a.dataset.view] = a.dataset.f; renderView(); break;
     case 'new-quote': {
-      const cid = a.dataset.client || (db.clients[0] && db.clients[0].id);
-      if (!cid) { toast('Add a client first'); break; }
+      const cid = a.dataset.client || lastClientId();
+      if (!cid) { needClient('quote'); break; }
       newQuote(cid); break;
     }
-    case 'new-job': {
-      if (!db.clients[0]) { toast('Add a client first'); break; }
-      const j = {id:uid(), num:'J-' + db.seq.j++, clientId:db.clients[0].id, quoteId:null, title:'', date:rel(1), status:'scheduled', items:[blankItem()], taxes:docTaxes(), discount:null, checklist:[], notes:'', invoiceId:null};
-      db.jobs.push(j); save(); renderTabs(); renderView(); openSheet('job', j.id); toast(`Booked ${j.num} for tomorrow`); break;
-    }
-    case 'new-invoice': {
-      if (!db.clients[0]) { toast('Add a client first'); break; }
-      const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'standard', clientId:db.clients[0].id, jobId:null, quoteId:null, title:'', date:TODAY, dueDays:+db.settings.terms, sent:false, everSent:false, void:false, items:[blankItem()], taxes:docTaxes(), discount:null, notes:'', payments:[], log:[ev(TODAY, 'Created')]};
-      db.invoices.push(inv); save(); renderTabs(); renderView(); openSheet('invoice', inv.id); toast(`Started ${inv.num}`); break;
-    }
+    case 'new-job': { const cid = lastClientId(); if (!cid) { needClient('job'); break; } newJob(cid); break; }
+    case 'new-invoice': { const cid = lastClientId(); if (!cid) { needClient('invoice'); break; } newInvoice(cid); break; }
     case 'new-client': {
       const c = {id:uid(), name:'', phone:'', email:'', address:''};
       db.clients.push(c); save();
@@ -1131,7 +1451,7 @@ document.addEventListener('click', e => {
       break;
     }
     case 'rm-item': { const id = a.closest('[data-item]').dataset.item; rec.items = rec.items.filter(i => i.id !== id); commit(); break; }
-    case 'q-send': rec.status = 'sent'; rec.sentOn = TODAY; commit(); toast(`${rec.num} marked as sent`); break;
+    case 'q-send': rec.status = 'sent'; rec.sentOn = TODAY; state.offer = null; commit(); toast(`${rec.num} marked as sent`); break;
     case 'q-accept': rec.status = 'accepted'; rec.acceptedOn = TODAY; commit(); toast(`${rec.num} accepted. Schedule the job or request a deposit.`); break;
     case 'q-decline': rec.status = 'declined'; commit(); toast(`${rec.num} marked as declined`); break;
     case 'q-draft': rec.status = 'draft'; delete rec.sentOn; delete rec.acceptedOn; commit(); toast(`${rec.num} is a draft again`); break;
@@ -1161,7 +1481,7 @@ document.addEventListener('click', e => {
     case 'j-invoice': { const j = a.dataset.id ? byId(db.jobs, a.dataset.id) : rec; if (j) invoiceFromJob(j); break; }
     case 'chk-add': { const inp = $('#chk-new'); const t = inp.value.trim(); if (!t) { inp.focus(); break; } rec.checklist.push({id:uid(), t, done:false}); commit(); const n = $('#chk-new'); if (n) n.focus(); break; }
     case 'chk-rm': rec.checklist = rec.checklist.filter(c => c.id !== a.dataset.id); commit(); break;
-    case 'i-send': rec.sent = true; rec.everSent = true; rec.sentOn = TODAY; log(rec, 'Marked as sent'); commit(); toast(`${rec.num} marked as sent`); break;
+    case 'i-send': rec.sent = true; rec.everSent = true; rec.sentOn = TODAY; state.offer = null; log(rec, 'Marked as sent'); commit(); toast(`${rec.num} marked as sent`); break;
     case 'i-draft': rec.sent = false; log(rec, 'Reopened for editing'); commit(); toast(`${rec.num} is a draft again`); break;
     case 'i-void': {
       if (rec.payments.length) { toast('Remove the payments before voiding'); break; }
@@ -1206,15 +1526,55 @@ document.addEventListener('click', e => {
       if (type === 'job') { db.quotes.forEach(q => { if (q.jobId === rec.id) q.jobId = null; }); }
       if (type === 'invoice') { db.jobs.forEach(j => { if (j.invoiceId === rec.id) j.invoiceId = null; }); }
       db[COL[type]] = db[COL[type]].filter(x => x !== rec);
-      state.sheet = null; state.returnTo = null; commit(); toast(`Deleted ${num}`); break;
+      state.sheet = null; state.returnTo = null; state.pendingNew = null; commit(); toast(`Deleted ${num}`); break;
     }
+    case 'pdf-download': {
+      if (!hasPDF()) { toast("The PDF maker didn't load. Check your connection and reload."); break; }
+      try { pdfFor(type, rec).save(pdfName(rec)); toast(`${pdfName(rec)} downloaded`); afterSend(type, rec); }
+      catch (err) { toast("Couldn't make the PDF. Try again."); }
+      break;
+    }
+    case 'pdf-share': {
+      if (!hasPDF()) { toast("The PDF maker didn't load. Check your connection and reload."); break; }
+      let file;
+      try { file = new File([pdfFor(type, rec).output('blob')], pdfName(rec), {type:'application/pdf'}); }
+      catch (err) { toast("Couldn't make the PDF. Try again."); break; }
+      const label = type === 'quote' ? 'Quote' : type === 'job' ? 'Work order' : 'Invoice';
+      navigator.share({files:[file], title:`${label} ${rec.num}`, text:shareMessage(type, rec)})
+        .then(() => afterSend(type, rec))
+        .catch(err => { if (err && err.name !== 'AbortError') toast("Sharing didn't work here. Use Download PDF instead."); });
+      break;
+    }
+    case 'email': {
+      const c = client(rec.clientId), s = db.settings;
+      const label = type === 'quote' ? 'Quote' : 'Invoice';
+      if (hasPDF()) { try { pdfFor(type, rec).save(pdfName(rec)); } catch (err) {} }
+      const href = `mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(`${label} ${rec.num} from ${s.name}`)}&body=${encodeURIComponent(shareMessage(type, rec))}`;
+      window.location.href = href;
+      toast(hasPDF() ? 'Your email app should open. Attach the PDF that just downloaded.' : 'Your email app should open.');
+      afterSend(type, rec); break;
+    }
+    case 'offer-dismiss': state.offer = null; renderSheet(); break;
     case 'copy': copyText(a.dataset.text, a.dataset.what || 'Copied'); break;
     case 'copy-doc': copyText(docText(type, rec), `${rec.num} copied as text`); break;
-    case 'copyfall-close': $('#copyfall').hidden = true; break;
+    case 'logo-pick': $('#logo-file').click(); break;
+    case 'logo-rm': db.settings.logo = ''; save(); renderSheet(); toast('Logo removed'); break;
+    case 'backup': {
+      db.lastBackup = TODAY; persist();
+      downloadBlob(`fieldbook-backup-${TODAY}.json`, new Blob([JSON.stringify(db)], {type:'application/json'}));
+      toast('Backup downloaded. Keep a copy somewhere safe, like your email or cloud storage.');
+      renderView(); renderSheet(); break;
+    }
+    case 'restore-confirm': {
+      const d = state.pendingRestore; if (!d) break;
+      db = d; db.edited = true; persist(); state.pendingRestore = null; state.sheet = null; renderAll(); toast(`Restored ${d.settings.name || 'your backup'}`); break;
+    }
+    case 'restore-cancel': state.pendingRestore = null; renderSheet(); break;
+    case 'erase': if (!arm(a, 'Tap again to erase everything')) break; goWelcome('All data erased from this device'); break;
+    case 'start-fresh': if (!arm(a, 'Tap again to clear sample data')) break; goWelcome('Sample data cleared. Set up your business below.'); break;
     case 'reset': {
       if (!arm(a, 'Tap again to reset')) break;
-      try { localStorage.removeItem(KEY); } catch (err) {}
-      db = seed(); state.sheet = null; state.returnTo = null; renderAll(); toast('Sample data restored'); break;
+      db = seed(); persist(); state.sheet = null; state.returnTo = null; renderAll(); toast('Sample data restored'); break;
     }
   }
 });
@@ -1237,6 +1597,7 @@ document.addEventListener('input', e => {
     rec.discount[t.dataset.disc] = t.dataset.disc === 'value' ? (parseFloat(t.value) || 0) : t.value;
     refresh(); save(); return;
   }
+  if (t.dataset.seq) { const v = parseInt(t.value, 10); if (v > 0) { db.seq[t.dataset.seq] = v; save(); } return; }
   if (t.dataset.f) {
     let v = t.value;
     if (t.dataset.f === 'date' && !v) return;
@@ -1248,7 +1609,16 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('change', e => {
-  const t = e.target; if (!t.dataset.chk) return;
+  const t = e.target;
+  if (t.id === 'logo-file') { const f = t.files[0]; t.value = ''; if (f && db) readLogo(f); return; }
+  if (t.id === 'restore-file') { const f = t.files[0]; t.value = ''; if (f) readBackup(f); return; }
+  if (t.dataset.seq && db) {
+    const k = t.dataset.seq, list = {q:db.quotes, j:db.jobs, i:db.invoices}[k];
+    const used = Math.max(0, ...list.map(r => parseInt(String(r.num).slice(PREFIX[k].length), 10) || 0));
+    if (db.seq[k] <= used) { db.seq[k] = used + 1; t.value = used + 1; save(); toast(`${PREFIX[k]}${used} is already used, so the next number is ${PREFIX[k]}${used + 1}`); }
+    return;
+  }
+  if (!t.dataset.chk) return;
   const rec = getRec(); const c = rec && rec.checklist.find(x => x.id === t.dataset.chk); if (!c) return;
   c.done = t.checked; commit();
   const again = document.getElementById(`ck-${c.id}`); if (again) again.focus({preventScroll:true});
@@ -1259,13 +1629,16 @@ document.addEventListener('keydown', e => {
 });
 
 function route() {
+  renderHeader();
+  if (!db) { state.view = 'welcome'; renderTabs(); renderView(); renderFooter(); return; }
   const h = location.hash.slice(1);
   state.view = VIEWS[h] ? h : 'overview';
-  renderTabs(); renderView();
+  renderTabs(); renderView(); renderFooter();
 }
 window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); });
-renderHeader();
 route();
+if (db && !db.demo) requestPersist();
+if (STANDALONE && 'serviceWorker' in navigator && location.protocol === 'https:') { navigator.serviceWorker.register('sw.js').catch(() => {}); }
 })();
 </script>
 </body>
