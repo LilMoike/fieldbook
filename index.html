@@ -19,6 +19,7 @@
   --accent:#c2410c; --accent-ink:#ffffff; --hl:#fff1a8;
   --ok:#2f7d3b; --ok-bg:#dcefdc; --info:#1d5f9e; --info-bg:#dde9f5;
   --warn:#8f5400; --warn-bg:#f8e8c8; --bad:#b42323; --bad-bg:#f6dcdc; --mute:#56636b; --mute-bg:#e2e5de;
+  --age0:#3f7fbf; --age1:#d6a21e; --age2:#e07b2a; --age3:#c93a2e; --age4:#7d1d1d;
   --shadow:rgba(20,28,34,.22); --scrim:rgba(12,17,21,.45);
   --f-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -31,6 +32,7 @@
   --accent:#ff8a4c; --accent-ink:#1d0c02; --hl:#3d3718;
   --ok:#7bd88a; --ok-bg:#1c3322; --info:#8cc4f5; --info-bg:#172a3b;
   --warn:#f5b85c; --warn-bg:#3a2a12; --bad:#ff8f8f; --bad-bg:#3d1c1c; --mute:#9ba7ad; --mute-bg:#262e35;
+  --age0:#6fb2ec; --age1:#f0c04c; --age2:#ff9a52; --age3:#f06a6a; --age4:#b84444;
   --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.6);
   color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -39,6 +41,7 @@
   --accent:#ff8a4c; --accent-ink:#1d0c02; --hl:#3d3718;
   --ok:#7bd88a; --ok-bg:#1c3322; --info:#8cc4f5; --info-bg:#172a3b;
   --warn:#f5b85c; --warn-bg:#3a2a12; --bad:#ff8f8f; --bad-bg:#3d1c1c; --mute:#9ba7ad; --mute-bg:#262e35;
+  --age0:#6fb2ec; --age1:#f0c04c; --age2:#ff9a52; --age3:#f06a6a; --age4:#b84444;
   --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.6);
   color-scheme:dark}
 
@@ -55,12 +58,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* header */
 .top{background:var(--bar);color:var(--bar-ink)}
-.top-in{display:flex;align-items:center;gap:12px 20px;padding-block:14px 10px;flex-wrap:wrap}
+.top-in{display:flex;align-items:center;gap:12px 14px;padding-block:14px 10px;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;flex:1;min-width:0}
 .logo{display:inline-flex;align-items:center;gap:10px;font:700 26px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase}
 .logo i{display:inline-block;width:12px;height:22px;background:var(--accent);border-radius:2px 2px 0 0;transform:translateY(2px)}
 .biz{font-size:13px;color:var(--bar-mute)}
 .demo{font:600 11px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--bar-ink);border:1px solid var(--bar-mute);border-radius:999px;padding:4px 8px}
+.hdr-icon{color:var(--bar-mute)}
+.hdr-icon:hover{background:transparent;color:var(--bar-ink)}
 .tabs-in{display:flex;gap:4px}
 .tab{position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 12px 12px;color:var(--bar-mute);text-decoration:none;font:600 15px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase}
 .tab:hover{color:var(--bar-ink)}
@@ -81,7 +86,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:var(--r);border:1px solid transparent;background:transparent;cursor:pointer;color:var(--ink-2)}
 .icon-btn:hover{background:var(--sunk);color:var(--ink)}
 .icon-btn.sm{width:30px;height:30px}
-.icon-btn svg,.btn svg{width:18px;height:18px}
+.icon-btn svg,.btn svg{width:18px;height:18px;flex:none}
+.btn.sm svg{width:16px;height:16px}
+.linkish{background:none;border:0;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-align:left}
 
 /* main */
 main{padding-block:24px 56px}
@@ -108,7 +115,9 @@ h1{font:700 36px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02e
 .att{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px 12px;padding:12px 14px;border-top:1px solid var(--line)}
 .att:first-child{border-top:0}
 .att-text{min-width:0}
+.att-sub{display:block;font-size:12px;color:var(--ink-2)}
 .att .amt{font:500 14px var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.att .linkish{color:inherit}
 
 .jrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer}
 .jrow:first-child{border-top:0}
@@ -125,7 +134,7 @@ h1{font:700 36px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02e
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .chip .mono{font-size:12px;color:inherit;opacity:.75}
 
-.row{display:grid;grid-template-columns:86px minmax(0,1fr) 90px 104px 120px;grid-template-areas:"num main date pill amt";align-items:center;gap:12px;width:100%;padding:12px 16px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer}
+.row{display:grid;grid-template-columns:86px minmax(0,1fr) 96px 104px 120px;grid-template-areas:"num main date pill amt";align-items:center;gap:12px;width:100%;padding:12px 16px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer}
 .row:first-child{border-top:0}
 .c-num{grid-area:num;font:500 13px var(--f-mono);color:var(--ink-2)}
 .c-main{grid-area:main;min-width:0}
@@ -133,6 +142,7 @@ h1{font:700 36px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02e
 .c-pill{grid-area:pill}
 .c-amt{grid-area:amt;text-align:right;font:500 14px var(--f-mono);font-variant-numeric:tabular-nums}
 .c-amt small{font-family:var(--f-body)}
+.void-amt{text-decoration:line-through;color:var(--ink-2)}
 .row.client{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 80px 120px;grid-template-areas:"main date num amt"}
 
 .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font:600 12px/1.6 var(--f-body);letter-spacing:.02em;white-space:nowrap}
@@ -143,18 +153,36 @@ h1{font:700 36px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02e
 .t-bad{color:var(--bad);background:var(--bad-bg)}
 .t-mute{color:var(--mute);background:var(--mute-bg)}
 
+/* aging report */
+.aging{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px 18px;margin-bottom:20px}
+.aging-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.aging-h .sec{margin:0}
+.aging-tot{font:600 22px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.aging-bar{display:flex;gap:2px;height:14px;border-radius:3px;overflow:hidden;background:var(--sunk);margin:12px 0 14px}
+.aging-bar span{min-width:6px}
+.a0{background:var(--age0)}.a1{background:var(--age1)}.a2{background:var(--age2)}.a3{background:var(--age3)}.a4{background:var(--age4)}
+.aging-legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.ag{display:grid;grid-template-columns:10px minmax(0,1fr);gap:2px 8px;align-items:center}
+.ag .sw{width:10px;height:10px;border-radius:2px}
+.ag-l{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
+.ag-v{grid-column:2;font-size:15px}
+.ag-n{grid-column:2;font-size:12px;color:var(--ink-2)}
+.ag.zero .ag-v{color:var(--ink-2)}
+
 .foot{padding-block:8px 40px;color:var(--ink-2);font-size:13px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 
 /* sheet */
 .scrim{position:fixed;inset:0;background:var(--scrim);z-index:40}
-.sheet{position:fixed;top:0;right:0;bottom:0;width:min(800px,100%);background:var(--paper);z-index:50;display:flex;flex-direction:column;box-shadow:-16px 0 48px var(--shadow);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);animation:slide .22s ease-out}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(820px,100%);background:var(--paper);z-index:50;display:flex;flex-direction:column;box-shadow:-16px 0 48px var(--shadow);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);animation:slide .22s ease-out}
 @keyframes slide{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
 .sheet-bar{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-bottom:1px solid var(--line);background:var(--surface)}
 .sb-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:600 15px var(--f-mono)}
 .sb-sub{margin-left:auto;font-size:13px;color:var(--ink-2);text-align:right}
-.sheet-body{flex:1;overflow-y:auto;padding:20px 20px 32px;overscroll-behavior:contain}
+.sheet-body{flex:1;overflow-y:auto;padding:16px 20px 32px;overscroll-behavior:contain}
 .sheet-foot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .sheet-foot .spacer{flex:1}
+.doc-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lock-note{margin:0 0 12px;font-size:13px;color:var(--ink-2)}
 
 .paper{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:30px 28px 26px;box-shadow:0 14px 28px -22px var(--shadow)}
 .paper::before{content:"";position:absolute;left:10px;right:10px;top:9px;height:6px;background:radial-gradient(circle,var(--paper) 2.5px,transparent 3px) 0 0/12px 6px repeat-x}
@@ -173,18 +201,21 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
 .f.title{font:600 24px/1.2 var(--f-display);letter-spacing:.01em}
 .doc-title{font:600 24px/1.2 var(--f-display);margin:0;text-wrap:balance}
 .title-wrap{padding:16px 0 4px}
-.linkish{background:none;border:0;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
 .items{margin-top:14px}
-.items-h,.item{display:grid;grid-template-columns:minmax(0,1fr) 100px 58px 62px 80px 92px 30px;gap:8px;align-items:center}
+.items-h,.item{display:grid;grid-template-columns:minmax(0,1fr) 96px 54px 58px 76px 40px 88px 30px;gap:8px;align-items:center}
 .items-h{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding-bottom:8px;border-bottom:1px solid var(--ink)}
 .items-h .r,.item .amt{text-align:right}
+.items-h .c{text-align:center}
 .item{padding:4px 0;border-bottom:1px dashed var(--line)}
 .item .f{border-bottom-color:transparent}
 .item .f:hover{border-bottom-color:var(--line)}
 .item .f:focus{border-bottom-color:var(--accent)}
 .f.num{text-align:right;font-family:var(--f-mono);font-size:14px}
 .item .amt{font:500 14px var(--f-mono);font-variant-numeric:tabular-nums}
+.tx{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--ink-2);cursor:pointer}
+.tx input{width:16px;height:16px;margin:0;accent-color:var(--accent);cursor:pointer}
+.tx span{display:none}
 .add-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
 .pb-label{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-left:6px}
 
@@ -198,37 +229,48 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
 .m-only{display:none!important}
 
 .paper-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-top:16px}
-.totals{margin-left:auto;width:min(300px,100%);display:grid;gap:5px}
+.disc{display:flex;gap:6px;align-items:flex-end}
+.disc select.f{width:58px}
+.disc input.f{width:96px}
+.totals{margin-left:auto;width:min(320px,100%);display:grid;gap:5px}
 .tot-row{display:flex;justify-content:space-between;gap:12px;font-size:14px}
-.tot-row .mono{font-variant-numeric:tabular-nums}
+.tot-row small{color:var(--ink-2);font-size:12px}
+.tot-row .mono{font-variant-numeric:tabular-nums;white-space:nowrap}
 .tot-row.grand{border-top:2px solid var(--ink);padding-top:8px;margin-top:4px;font-weight:600;font-size:17px}
+.tot-row.credit{color:var(--ok)}
 .mix{font-size:12px;color:var(--ink-2);text-align:right}
 .stamp{align-self:center;transform:rotate(-8deg);border:3px solid currentColor;border-radius:6px;padding:6px 16px 4px;font:700 30px/1 var(--f-display);letter-spacing:.16em;text-transform:uppercase;opacity:.85;margin:6px 0 0 6px}
 .stamp small{display:block;font:600 11px/1.4 var(--f-mono);letter-spacing:.04em;text-align:center}
-.stamp.t-ok,.stamp.t-bad,.stamp.t-info{background:transparent}
+.stamp.t-ok,.stamp.t-bad,.stamp.t-info,.stamp.t-mute{background:transparent}
 .notes{margin-top:18px}
 .notes p{margin:0;white-space:pre-wrap}
 .terms{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2);display:grid;gap:2px}
 
 .panel{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
 .panel h3{font:600 14px/1 var(--f-display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);margin:0 0 10px}
+.panel p{margin:10px 0 0}
 .check{display:flex;align-items:center;gap:10px;padding:5px 0}
 .check input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none;cursor:pointer}
 .check label{flex:1;cursor:pointer}
 .check.done label{text-decoration:line-through;color:var(--ink-2)}
 .inline-add{display:flex;gap:8px;margin-top:8px}
 .inline-add .f{flex:1}
-.pay{display:grid;grid-template-columns:90px minmax(0,1fr) auto 30px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.pay{display:grid;grid-template-columns:70px minmax(0,1fr) auto 30px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
 .pay-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;align-items:end;margin-top:12px}
-.contact{display:grid;gap:2px}
+.late{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:10px 12px;border-radius:var(--r);background:var(--bad-bg);font-size:14px}
+.late strong{color:var(--bad)}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.log li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;font-size:14px}
+.log li span:first-child{color:var(--ink-2);font-size:13px}
+.contact{display:grid;gap:2px;align-content:start}
 .copyline{display:flex;align-items:center;gap:6px}
-.field{display:grid;gap:2px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;padding-top:16px}
+.field{display:grid;gap:2px;align-content:start}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
 
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--bar);color:var(--bar-ink);padding:10px 18px;border-radius:999px;font-weight:500;z-index:90;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .copyfall{position:fixed;inset:auto 0 0 0;z-index:95;background:var(--surface);border-top:1px solid var(--line);padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));box-shadow:0 -12px 32px var(--shadow)}
-.copyfall textarea{width:100%;height:160px;font:13px/1.45 var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px}
+.copyfall textarea{width:100%;height:180px;font:13px/1.45 var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px}
 .copyfall div{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
 
 @media (max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
@@ -253,19 +295,22 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   h1{font-size:30px}
   .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   .sheet{padding-left:env(safe-area-inset-left,0px)}
+  .aging-legend{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:640px){
   .row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"num pill" "main main" "date amt";row-gap:4px}
   .row.client{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main amt" "date num"}
   .att{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"pill amt" "text text" "btn btn"}
   .att .pill{grid-area:pill;justify-self:start}.att .amt{grid-area:amt}.att-text{grid-area:text}.att .btn{grid-area:btn;justify-self:start}
-  .sheet-body{padding:14px 12px 28px}
+  .sheet-body{padding:12px 12px 28px}
   .paper{padding:26px 16px 20px}
   .doc-label{font-size:24px}
   .items-h{display:none}
   .item{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr) minmax(0,.7fr) minmax(0,.9fr);padding:8px 0}
   .item .desc{grid-column:1/-1}
-  .item .amt{grid-column:1/4}
+  .item .tx{grid-column:1;justify-content:flex-start}
+  .item .tx span{display:inline}
+  .item .amt{grid-column:2/4}
   .item .icon-btn{justify-self:end}
   .ro .d-only{display:none}
   .m-only{display:block!important}
@@ -274,8 +319,25 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   .form-grid{grid-template-columns:minmax(0,1fr)}
   .stamp{font-size:24px}
   .sb-sub{display:none}
+  .aging-legend{grid-template-columns:minmax(0,1fr);gap:6px}
+  .ag{grid-template-columns:10px minmax(0,1fr) auto}
+  .ag-v{grid-column:auto;font-size:14px}
+  .ag-n{display:none}
 }
 @media (prefers-reduced-motion:reduce){.sheet{animation:none}.toast{transition:none}}
+@media print{
+  :root:not(#print-light),:root[data-theme]{--paper:#fff;--surface:#fff;--sunk:#f2f2f2;--ink:#111;--ink-2:#555;--line:#ccc;--accent:#b83a0a;--hl:transparent;--ok:#2f7d3b;--bad:#b42323;--mute:#555;--info:#1d5f9e;color-scheme:light}
+  body{background:#fff}
+  @page{margin:16mm}
+  .top,#view,.foot,.scrim,.toast,.copyfall,.tabs,.sheet-bar,.sheet-foot,.panel,.doc-tools,.add-line,.lock-note,.item .icon-btn,.disc,.copyline .icon-btn{display:none!important}
+  .linkish{color:inherit;text-decoration:none}
+  body.locked{overflow:visible}
+  .sheet{position:static;width:auto;box-shadow:none;background:#fff;animation:none;padding:0;display:block}
+  .sheet-body{overflow:visible;padding:0}
+  .paper{border:0;box-shadow:none;padding:0}
+  .paper::before{display:none}
+  .f{border:0!important;background:transparent!important;-webkit-appearance:none;appearance:none}
+}
 </style>
 
 </head>
@@ -284,9 +346,10 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
   <div class="wrap top-in">
     <div class="brand">
       <span class="logo"><i aria-hidden="true"></i>Fieldbook</span>
-      <span class="biz">Harbourline Home Services · Oshawa, ON</span>
+      <span class="biz" id="hdr-biz">Harbourline Home Services · Oshawa, ON</span>
       <span class="demo">Demo</span>
     </div>
+    <button class="icon-btn hdr-icon" data-act="settings" id="hdr-settings" aria-label="Settings" title="Settings"></button>
     <button class="btn primary" data-act="new-quote" id="hdr-new">New quote</button>
   </div>
   <nav class="tabs" id="tabs" aria-label="Sections"></nav>
@@ -307,9 +370,23 @@ textarea.f{border:1px solid var(--line);border-radius:4px;min-height:76px;resize
 <script>
 (() => {
 'use strict';
-const KEY = 'fieldbook-demo-v1';
-const TAX = 0.13, TAX_LABEL = 'HST 13%';
-const BIZ = {name:'Harbourline Home Services', addr:'Oshawa, ON', phone:'905-555-0100', email:'office@harbourline.example', hst:'HST # 81234 5678 RT0001', etransfer:'pay@harbourline.example'};
+const KEY = 'fieldbook-demo-v2';
+const PROVINCES = {
+  ON:{name:'Ontario', taxes:[{label:'HST', rate:13}]},
+  NS:{name:'Nova Scotia', taxes:[{label:'HST', rate:14}]},
+  NB:{name:'New Brunswick', taxes:[{label:'HST', rate:15}]},
+  NL:{name:'Newfoundland and Labrador', taxes:[{label:'HST', rate:15}]},
+  PE:{name:'Prince Edward Island', taxes:[{label:'HST', rate:15}]},
+  QC:{name:'Quebec', taxes:[{label:'GST', rate:5}, {label:'QST', rate:9.975}]},
+  MB:{name:'Manitoba', taxes:[{label:'GST', rate:5}, {label:'RST', rate:7}]},
+  SK:{name:'Saskatchewan', taxes:[{label:'GST', rate:5}, {label:'PST', rate:6}]},
+  BC:{name:'British Columbia', taxes:[{label:'GST', rate:5}, {label:'PST', rate:7}]},
+  AB:{name:'Alberta', taxes:[{label:'GST', rate:5}]},
+  NT:{name:'Northwest Territories', taxes:[{label:'GST', rate:5}]},
+  NU:{name:'Nunavut', taxes:[{label:'GST', rate:5}]},
+  YT:{name:'Yukon', taxes:[{label:'GST', rate:5}]},
+};
+const TERMS = [[0,'Due on receipt'],[7,'Net 7'],[15,'Net 15'],[30,'Net 30'],[45,'Net 45']];
 const KINDS = {labour:'Labour', material:'Material', flat:'Flat fee'};
 const PRICEBOOK = [
   {desc:'General labour', kind:'labour', qty:1, unit:'hr', rate:75},
@@ -334,11 +411,26 @@ const daysBetween = (a, b) => { const A = parse(a), B = parse(b); return Math.ro
 const fmtDate = s => s ? parse(s).toLocaleDateString('en-CA', {month:'short', day:'numeric'}) : '—';
 const fmtLong = s => s ? parse(s).toLocaleDateString('en-CA', {weekday:'short', month:'short', day:'numeric', year:'numeric'}) : '—';
 const money = c => (c/100).toLocaleString('en-CA', {style:'currency', currency:'CAD'});
+const fmtRate = r => String(+(+r).toFixed(3));
 const lineCents = it => Math.round((+it.qty || 0) * (+it.rate || 0) * 100);
-const totals = items => { const sub = items.reduce((s, it) => s + lineCents(it), 0); const tax = Math.round(sub * TAX); return {sub, tax, total: sub + tax}; };
 const clone = items => items.map(i => ({...i, id: uid()}));
 const relDay = s => { const n = daysBetween(TODAY, s); return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : n === -1 ? 'Yesterday' : n > 1 ? `In ${n} days` : `${-n} days ago`; };
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+const ev = (date, text) => ({id: uid(), date, text});
+const canPrint = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+
+function totals(r) {
+  const items = r.items || [];
+  const sub = items.reduce((s, it) => s + lineCents(it), 0);
+  const taxableSub = items.filter(it => it.taxable !== false).reduce((s, it) => s + lineCents(it), 0);
+  let disc = 0;
+  const d = r.discount;
+  if (d && +d.value > 0) disc = d.mode === 'amt' ? Math.min(sub, Math.round(+d.value * 100)) : Math.round(sub * Math.min(100, +d.value) / 100);
+  const taxBase = sub > 0 ? taxableSub - Math.round(disc * taxableSub / sub) : 0;
+  const taxes = (r.taxes || docTaxes()).map(t => ({...t, cents: Math.round(taxBase * t.rate / 100)}));
+  const tax = taxes.reduce((s, t) => s + t.cents, 0);
+  return {sub, taxableSub, disc, taxBase, taxes, tax, total: sub - disc + tax};
+}
 
 const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const ICON = {
@@ -349,11 +441,20 @@ const ICON = {
   clients: svg('<circle cx="12" cy="8" r="4"/><path d="M4.5 21c.8-4 3.8-6 7.5-6s6.7 2 7.5 6"/>'),
   x: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
   copy: svg('<rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'),
+  print: svg('<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="1.5"/><path d="M7 14h10v6.5H7z"/>'),
+  bell: svg('<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+  sliders: svg('<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'),
 };
 
 /* ---------- data ---------- */
+const DEFAULT_SETTINGS = {name:'Harbourline Home Services', addr:'Oshawa, ON', phone:'905-555-0100', email:'office@harbourline.example', hst:'81234 5678 RT0001', etransfer:'pay@harbourline.example', province:'ON', terms:15, lateRate:2, depositPct:30};
+function docTaxes() { const p = PROVINCES[(db && db.settings.province) || 'ON'] || PROVINCES.ON; return p.taxes.map(t => ({...t})); }
+const taxesOf = r => (r.taxes || docTaxes()).map(t => ({label:t.label, rate:t.rate}));
+const taxSummary = taxes => taxes.map(t => `${t.label} ${fmtRate(t.rate)}%`).join(' + ');
+
 function seed() {
-  const L = (desc, kind, qty, unit, rate) => ({id: uid(), desc, kind, qty, unit, rate});
+  const TX = () => PROVINCES.ON.taxes.map(t => ({...t}));
+  const L = (desc, kind, qty, unit, rate, x = {}) => ({id: uid(), desc, kind, qty, unit, rate, taxable: true, ...x});
   const S = {
     bath: () => [L('Remove vanity, toilet & flooring','labour',6,'hr',75), L('Vinyl plank flooring, 22 sq ft box','material',2,'box',64), L('Vanity 30″ with top','material',1,'ea',489), L('Install vanity, toilet & flooring','labour',10,'hr',75), L('Disposal / dump run','flat',1,'load',120)],
     deck: () => [L('PT deck boards 5/4×6×12','material',18,'board',17.4), L('Railing balusters & hardware','material',1,'lot',185), L('Two-person crew','labour',9,'hr',130), L('Disposal / dump run','flat',1,'load',120)],
@@ -366,6 +467,7 @@ function seed() {
     shelf: () => [L('Install reception shelving','labour',7,'hr',75), L('Shelf brackets & anchors','material',1,'lot',96)],
     storm: () => [L('Adjust storm door closer & sweep','labour',1.5,'hr',75), L('Storm door closer','material',1,'ea',38), L('Service call / trip charge','flat',1,'ea',95)],
     base: () => [L('Replace baseboards, exam rooms 1–2','labour',6,'hr',75), L('MDF baseboard 3½″ × 12′','material',8,'length',16.8)],
+    drain: () => [L('Clear kitchen drain with auger','labour',2,'hr',75), L('Service call / trip charge','flat',1,'ea',95)],
   };
   const clients = [
     {id:'c1', name:'Priya Natarajan', phone:'905-555-0142', email:'priya.n@example.com', address:'18 Simcoe St N, Oshawa'},
@@ -374,19 +476,19 @@ function seed() {
     {id:'c4', name:'Tom Bergeron', phone:'905-555-0163', email:'tbergeron@example.com', address:'77 Prestonvale Rd, Courtice'},
     {id:'c5', name:'Maple Row Property Mgmt', phone:'905-555-0175', email:'maint@maplerow.example', address:'15 Harwood Ave S, Ajax'},
   ];
-  const q = (id, num, clientId, title, date, status, items, x = {}) => ({id, num, clientId, title, date, status, items, notes:'', jobId:null, ...x});
+  const q = (id, num, clientId, title, date, status, items, x = {}) => ({id, num, clientId, title, date, status, items, taxes:TX(), discount:null, notes:'', jobId:null, ...x});
   const quotes = [
     q('q1038','Q-1038','c2','Fence gate rehang',rel(-30),'declined',S.gate(),{sentOn:rel(-30)}),
     q('q1039','Q-1039','c4','Gutter clean-out',rel(-28),'accepted',S.gutter(),{sentOn:rel(-28),acceptedOn:rel(-26),jobId:'j309'}),
     q('q1040','Q-1040','c5','Unit 2A fixture swap',rel(-35),'accepted',S.fix2a(),{sentOn:rel(-35),acceptedOn:rel(-33),jobId:'j310'}),
     q('q1041','Q-1041','c1','Basement bathroom refresh',rel(-12),'accepted',S.bath(),{sentOn:rel(-12),acceptedOn:rel(-8),jobId:'j311',notes:'Client supplies the toilet. Price includes removal and disposal of old fixtures.'}),
-    q('q1042','Q-1042','c2','Deck boards & railing repair',rel(-9),'sent',S.deck(),{sentOn:rel(-9),notes:'Board count assumes 14 × 16 ft deck. Stain is not included.'}),
+    q('q1042','Q-1042','c2','Deck boards & railing repair',rel(-9),'sent',S.deck(),{sentOn:rel(-9),notes:'Board count assumes a 14 × 16 ft deck. Stain is not included.'}),
     q('q1043','Q-1043','c3','Waiting room drywall & paint',rel(-16),'accepted',S.dental(),{sentOn:rel(-16),acceptedOn:rel(-14),jobId:'j312',notes:'Work done after 5 pm so the office can stay open.'}),
     q('q1044','Q-1044','c4','Replace front entry door',rel(-1),'draft',S.door()),
-    q('q1045','Q-1045','c5','Unit 4B turnover: paint & fixtures',rel(-2),'sent',S.t4b(),{sentOn:rel(-2)}),
+    q('q1045','Q-1045','c5','Unit 4B turnover: paint & fixtures',rel(-2),'sent',S.t4b(),{sentOn:rel(-2),discount:{mode:'pct',value:10},notes:'Includes the 10% property-manager rate.'}),
   ];
   const ck = (t, done = false) => ({id: uid(), t, done});
-  const j = (id, num, clientId, quoteId, title, date, status, items, x = {}) => ({id, num, clientId, quoteId, title, date, status, items, checklist:[], notes:'', invoiceId:null, ...x});
+  const j = (id, num, clientId, quoteId, title, date, status, items, x = {}) => ({id, num, clientId, quoteId, title, date, status, items, taxes:TX(), discount:null, checklist:[], notes:'', invoiceId:null, ...x});
   const jobs = [
     j('j308','J-308','c3',null,'Reception shelving install',rel(-27),'done',S.shelf(),{invoiceId:'i2206',checklist:[ck('Find studs behind reception wall',true),ck('Level & anchor brackets',true)]}),
     j('j309','J-309','c4','q1039','Gutter clean-out',rel(-21),'done',S.gutter(),{invoiceId:'i2207'}),
@@ -396,52 +498,95 @@ function seed() {
     j('j313','J-313','c3',null,'Exam room baseboards',TODAY,'in_progress',S.base(),{checklist:[ck('Remove old baseboard',true),ck('Cut & fit new MDF'),ck('Caulk & paint')]}),
     j('j314','J-314','c2',null,'Storm door adjustment',rel(-6),'done',S.storm(),{invoiceId:'i2209'}),
   ];
-  const inv = (id, num, clientId, jobId, title, date, items, pay) => ({id, num, clientId, jobId, title, date, dueDays:15, sent:true, sentOn:date, items, notes:'', payments: pay ? pay(totals(items).total) : []});
+  const inv = o => {
+    const r = {kind:'standard', jobId:null, quoteId:null, dueDays:15, sent:true, everSent:true, void:false, notes:'', payments:[], taxes:TX(), discount:null, ...o};
+    r.sentOn = r.date;
+    if (o.pay) r.payments = o.pay(totals(r).total);
+    r.log = [ev(r.date, o.from || 'Created'), ev(r.date, 'Marked as sent'),
+      ...r.payments.map(p => ev(p.date, `Payment of ${money(p.cents)} received by ${p.method}`)),
+      ...(o.extraLog || [])].sort((a, b) => a.date.localeCompare(b.date));
+    delete r.pay; delete r.from; delete r.extraLog;
+    return r;
+  };
+  const drainItems = S.drain();
+  const drainBal = totals({items:drainItems, taxes:TX()}).total;
+  const drainFee = Math.round(drainBal * 0.02);
+  drainItems.push(L(`Late fee: 2% of ${money(drainBal)} overdue`, 'flat', 1, 'ea', drainFee / 100, {taxable:false, fee:true, feeDate:rel(-17)}));
+  const bathTotal = totals({items:S.bath(), taxes:TX()}).total;
+  const depCents = Math.round(bathTotal * 0.3);
   const invoices = [
-    inv('i2206','INV-2206','c3','j308','Reception shelving install',rel(-26),S.shelf(),t => [{id:uid(),date:rel(-14),cents:t,method:'Cheque'}]),
-    inv('i2207','INV-2207','c4','j309','Gutter clean-out',rel(-20),S.gutter(),t => [{id:uid(),date:rel(-6),cents:t,method:'e-Transfer'}]),
-    inv('i2208','INV-2208','c5','j310','Unit 2A fixture swap',rel(-24),S.fix2a()),
-    inv('i2209','INV-2209','c2','j314','Storm door adjustment',rel(-5),S.storm(),() => [{id:uid(),date:rel(-5),cents:10000,method:'Cash'}]),
+    inv({id:'i2204', num:'INV-2204', clientId:'c5', title:'Unit 1C drain clearing', date:rel(-62), items:drainItems, lastReminder:rel(-20),
+      extraLog:[ev(rel(-40),'Friendly reminder sent'), ev(rel(-20),'Overdue reminder sent'), ev(rel(-17),`Late fee of ${money(drainFee)} added`)]}),
+    inv({id:'i2205', num:'INV-2205', clientId:'c3', title:'Reception shelving install', date:rel(-26), items:S.shelf(), void:true,
+      extraLog:[ev(rel(-26),'Voided: duplicate of INV-2206')]}),
+    inv({id:'i2206', num:'INV-2206', clientId:'c3', jobId:'j308', from:'Created from J-308', title:'Reception shelving install', date:rel(-26), items:S.shelf(), pay:t => [{id:uid(),date:rel(-14),cents:t,method:'Cheque'}]}),
+    inv({id:'i2207', num:'INV-2207', clientId:'c4', jobId:'j309', quoteId:'q1039', from:'Created from J-309', title:'Gutter clean-out', date:rel(-20), items:S.gutter(), pay:t => [{id:uid(),date:rel(-6),cents:t,method:'e-Transfer'}]}),
+    inv({id:'i2208', num:'INV-2208', clientId:'c5', jobId:'j310', quoteId:'q1040', from:'Created from J-310', title:'Unit 2A fixture swap', date:rel(-24), items:S.fix2a()}),
+    inv({id:'i2209', num:'INV-2209', clientId:'c2', jobId:'j314', from:'Created from J-314', title:'Storm door adjustment', date:rel(-5), items:S.storm(), pay:() => [{id:uid(),date:rel(-5),cents:10000,method:'Cash'}]}),
+    inv({id:'i2210', num:'INV-2210', kind:'deposit', clientId:'c1', quoteId:'q1041', jobId:'j311', from:'Requested from Q-1041', title:'Deposit · Basement bathroom refresh', date:rel(-8), dueDays:0,
+      items:[L('Deposit (30%) for Q-1041 Basement bathroom refresh','flat',1,'ea',depCents / 100,{taxable:false})], notes:'This deposit is credited in full on the final invoice.',
+      pay:t => [{id:uid(),date:rel(-7),cents:t,method:'e-Transfer'}]}),
   ];
-  return {v:1, edited:false, clients, quotes, jobs, invoices, seq:{q:1046, j:315, i:2210}};
+  return {v:2, edited:false, settings:{...DEFAULT_SETTINGS}, clients, quotes, jobs, invoices, seq:{q:1046, j:315, i:2211}};
 }
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); if (d && d.v === 1 && d.edited) return d; } } catch (e) {}
+  try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); if (d && d.v === 2 && d.edited) return d; } } catch (e) {}
   return seed();
 }
 function save() { db.edited = true; try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
 
-let db = load();
+let db = null;
+db = load();
 const state = {view:'overview', sheet:null, returnTo:null, filters:{quotes:'all', invoices:'all'}};
 const COL = {quote:'quotes', job:'jobs', invoice:'invoices', client:'clients'};
 const byId = (arr, id) => arr.find(x => x.id === id);
 const client = id => byId(db.clients, id) || {name:'No client', address:'', phone:'', email:''};
-const getRec = () => state.sheet ? byId(db[COL[state.sheet.type]], state.sheet.id) : null;
-const blankItem = () => ({id:uid(), desc:'', kind:'labour', qty:1, unit:'hr', rate:75});
+const getRec = () => !state.sheet ? null : state.sheet.type === 'settings' ? db.settings : byId(db[COL[state.sheet.type]], state.sheet.id);
+const blankItem = () => ({id:uid(), desc:'', kind:'labour', qty:1, unit:'hr', rate:75, taxable:true});
 
-function iInfo(inv) {
-  const t = totals(inv.items);
-  const paid = inv.payments.reduce((s, p) => s + p.cents, 0);
-  const due = addDays(inv.date, +inv.dueDays || 0);
-  const bal = t.total - paid;
-  let status;
-  if (t.total > 0 && bal <= 0) status = 'paid';
-  else if (!inv.sent) status = 'draft';
-  else if (daysBetween(due, TODAY) > 0) status = 'overdue';
-  else if (paid > 0) status = 'partial';
-  else status = 'sent';
-  return {...t, paid, bal, due, status};
+/* ---------- invoice math ---------- */
+const paidOf = inv => inv.payments.reduce((s, p) => s + p.cents, 0);
+const lastPayDate = inv => inv.payments.map(p => p.date).sort().pop();
+function depositsFor(inv) {
+  if (inv.kind === 'deposit') return [];
+  const job = inv.jobId && byId(db.jobs, inv.jobId);
+  const qid = inv.quoteId || (job && job.quoteId);
+  return db.invoices.filter(d => d.kind === 'deposit' && !d.void && ((qid && d.quoteId === qid) || (inv.jobId && d.jobId === inv.jobId)))
+    .map(d => ({inv:d, cents:paidOf(d)})).filter(x => x.cents > 0);
 }
+function iInfo(inv) {
+  const t = totals(inv);
+  const paid = paidOf(inv);
+  const deps = depositsFor(inv);
+  const dep = deps.reduce((s, d) => s + d.cents, 0);
+  const due = addDays(inv.date, +inv.dueDays || 0);
+  const bal = t.total - dep - paid;
+  const daysOver = Math.max(0, daysBetween(due, TODAY));
+  let status;
+  if (inv.void) status = 'void';
+  else if (t.total > 0 && bal <= 0) status = 'paid';
+  else if (!inv.sent) status = 'draft';
+  else if (daysOver > 0) status = 'overdue';
+  else if (paid > 0 || dep > 0) status = 'partial';
+  else status = 'sent';
+  return {...t, paid, deps, dep, bal, due, daysOver, status};
+}
+const isOpen = x => ['sent','partial','overdue'].includes(x.status);
+const depositOf = (qid, jid) => db.invoices.find(d => d.kind === 'deposit' && !d.void && ((qid && d.quoteId === qid) || (jid && d.jobId === jid)));
 
 const PILLS = {
   quote: {draft:['Draft','mute'], sent:['Sent','info'], accepted:['Accepted','ok'], declined:['Declined','bad']},
   job: {scheduled:['Scheduled','info'], in_progress:['On site','warn'], done:['Done','ok']},
-  invoice: {draft:['Draft','mute'], sent:['Sent','info'], partial:['Part paid','warn'], overdue:['Overdue','bad'], paid:['Paid','ok']},
+  invoice: {draft:['Draft','mute'], sent:['Sent','info'], partial:['Part paid','warn'], overdue:['Overdue','bad'], paid:['Paid','ok'], void:['Void','mute']},
 };
 const pill = (type, st) => { const [l, t] = PILLS[type][st]; return `<span class="pill t-${t}">${l}</span>`; };
 
 /* ---------- main views ---------- */
 const TABS = [['overview','Overview'],['quotes','Quotes'],['jobs','Jobs'],['invoices','Invoices'],['clients','Clients']];
+function renderHeader() {
+  $('#hdr-biz').textContent = [db.settings.name, db.settings.addr].filter(Boolean).join(' · ');
+  $('#hdr-settings').innerHTML = ICON.sliders;
+}
 function renderTabs() {
   const badge = {
     jobs: db.jobs.filter(j => j.status === 'done' && !j.invoiceId).length,
@@ -453,23 +598,25 @@ function renderTabs() {
 function viewOverview() {
   const sent = db.quotes.filter(q => q.status === 'sent');
   const drafts = db.quotes.filter(q => q.status === 'draft');
-  const quotedVal = sent.reduce((s, q) => s + totals(q.items).total, 0);
+  const quotedVal = sent.reduce((s, q) => s + totals(q).total, 0);
   const open = db.jobs.filter(j => j.status !== 'done').sort((a, b) => a.date.localeCompare(b.date));
   const week = open.filter(j => daysBetween(TODAY, j.date) <= 7);
-  const weekVal = week.reduce((s, j) => s + totals(j.items).total, 0);
+  const weekVal = week.reduce((s, j) => s + totals(j).total, 0);
   const infos = db.invoices.map(i => [i, iInfo(i)]);
-  const unpaid = infos.filter(([, x]) => ['sent','partial','overdue'].includes(x.status));
+  const unpaid = infos.filter(([, x]) => isOpen(x));
   const unpaidVal = unpaid.reduce((s, [, x]) => s + x.bal, 0);
-  const overdue = unpaid.filter(([, x]) => x.status === 'overdue');
+  const overdue = unpaid.filter(([, x]) => x.status === 'overdue').sort((a, b) => b[1].daysOver - a[1].daysOver);
   const cutoff = rel(-30);
-  const collected = db.invoices.flatMap(i => i.payments).filter(p => p.date >= cutoff && p.date <= TODAY).reduce((s, p) => s + p.cents, 0);
+  const collected = db.invoices.filter(i => !i.void).flatMap(i => i.payments).filter(p => p.date >= cutoff && p.date <= TODAY).reduce((s, p) => s + p.cents, 0);
 
   const att = [];
-  overdue.forEach(([i, x]) => att.push({tone:'bad', tag:'Overdue', text:`<strong>${esc(i.num)}</strong> for ${esc(client(i.clientId).name)} is ${plural(daysBetween(x.due, TODAY), 'day')} past due`, amt:x.bal, btn:`<button class="btn sm" data-open="invoice:${i.id}">Open invoice</button>`}));
-  db.jobs.filter(j => j.status === 'done' && !j.invoiceId).forEach(j => att.push({tone:'warn', tag:'Not invoiced', text:`<strong>${esc(j.num)}</strong> ${esc(j.title)} was finished ${relDay(j.date).toLowerCase()}`, amt:totals(j.items).total, btn:`<button class="btn sm primary" data-act="j-invoice" data-id="${j.id}">Create invoice</button>`}));
-  sent.filter(q => q.sentOn && daysBetween(q.sentOn, TODAY) >= 7).forEach(q => att.push({tone:'info', tag:'Follow up', text:`<strong>${esc(q.num)}</strong> to ${esc(client(q.clientId).name)} has had no reply for ${plural(daysBetween(q.sentOn, TODAY), 'day')}`, amt:totals(q.items).total, btn:`<button class="btn sm" data-open="quote:${q.id}">Open quote</button>`}));
-  db.quotes.filter(q => q.status === 'accepted' && !q.jobId).forEach(q => att.push({tone:'ok', tag:'Book it', text:`<strong>${esc(q.num)}</strong> ${esc(q.title)} was accepted and needs a date`, amt:totals(q.items).total, btn:`<button class="btn sm primary" data-act="q-schedule" data-id="${q.id}">Schedule job</button>`}));
-  drafts.forEach(q => att.push({tone:'mute', tag:'Draft', text:`<strong>${esc(q.num)}</strong> ${esc(q.title || 'Untitled quote')} for ${esc(client(q.clientId).name)} hasn't been sent`, amt:totals(q.items).total, btn:`<button class="btn sm" data-open="quote:${q.id}">Finish quote</button>`}));
+  overdue.forEach(([i, x]) => att.push({tone:'bad', tag:'Overdue',
+    text:`<button class="linkish" data-open="invoice:${i.id}">${esc(i.num)}</button> for ${esc(client(i.clientId).name)} is ${plural(x.daysOver, 'day')} past due<span class="att-sub">${i.lastReminder ? `Last reminder ${relDay(i.lastReminder).toLowerCase()}` : 'No reminder sent yet'}</span>`,
+    amt:x.bal, btn:`<button class="btn sm" data-act="i-remind" data-id="${i.id}">${ICON.bell}Copy reminder</button>`}));
+  db.jobs.filter(j => j.status === 'done' && !j.invoiceId).forEach(j => att.push({tone:'warn', tag:'Not invoiced', text:`<strong>${esc(j.num)}</strong> ${esc(j.title)} was finished ${relDay(j.date).toLowerCase()}`, amt:totals(j).total, btn:`<button class="btn sm primary" data-act="j-invoice" data-id="${j.id}">Create invoice</button>`}));
+  sent.filter(q => q.sentOn && daysBetween(q.sentOn, TODAY) >= 7).forEach(q => att.push({tone:'info', tag:'Follow up', text:`<strong>${esc(q.num)}</strong> to ${esc(client(q.clientId).name)} has had no reply for ${plural(daysBetween(q.sentOn, TODAY), 'day')}`, amt:totals(q).total, btn:`<button class="btn sm" data-open="quote:${q.id}">Open quote</button>`}));
+  db.quotes.filter(q => q.status === 'accepted' && !q.jobId).forEach(q => att.push({tone:'ok', tag:'Book it', text:`<strong>${esc(q.num)}</strong> ${esc(q.title)} was accepted and needs a date`, amt:totals(q).total, btn:`<button class="btn sm primary" data-act="q-schedule" data-id="${q.id}">Schedule job</button>`}));
+  drafts.forEach(q => att.push({tone:'mute', tag:'Draft', text:`<strong>${esc(q.num)}</strong> ${esc(q.title || 'Untitled quote')} for ${esc(client(q.clientId).name)} hasn't been sent`, amt:totals(q).total, btn:`<button class="btn sm" data-open="quote:${q.id}">Finish quote</button>`}));
 
   const dateLine = parse(TODAY).toLocaleDateString('en-CA', {weekday:'long', month:'long', day:'numeric'});
   return `
@@ -514,7 +661,7 @@ function viewQuotes() {
   const list = db.quotes.filter(q => f === 'all' || q.status === f).sort((a, b) => b.num.localeCompare(a.num));
   return `<div class="view-head"><div><h1>Quotes</h1><p class="lede">Price the work, send it, and turn accepted quotes into jobs.</p></div><button class="btn primary" data-act="new-quote">New quote</button></div>
   ${chips('quotes', [['all','All',db.quotes.length],['draft','Draft',cnt('draft')],['sent','Sent',cnt('sent')],['accepted','Accepted',cnt('accepted')],['declined','Declined',cnt('declined')]])}
-  <div class="list">${list.length ? list.map(q => docRow('quote', q, money(totals(q.items).total), fmtDate(q.date))).join('') : `<div class="empty">No quotes here yet.</div>`}</div>`;
+  <div class="list">${list.length ? list.map(q => docRow('quote', q, money(totals(q).total), fmtDate(q.date))).join('') : `<div class="empty">No quotes here yet.</div>`}</div>`;
 }
 
 function viewJobs() {
@@ -529,24 +676,44 @@ function viewJobs() {
   ${groups.length ? groups.map(([h, l]) => `<h2 class="sec">${h} <span class="mono">${l.length}</span></h2><div class="list">${l.map(jobRow).join('')}</div>`).join('') : `<div class="list"><div class="empty">No jobs yet. Schedule one from an accepted quote.</div></div>`}`;
 }
 
+function agingHTML(infos) {
+  const B = [['Current'],['1–30 days'],['31–60 days'],['61–90 days'],['90+ days']].map(([l]) => ({l, c:0, n:0}));
+  infos.forEach(([, x]) => {
+    if (!isOpen(x) || x.bal <= 0) return;
+    const d = x.daysOver, k = d <= 0 ? 0 : d <= 30 ? 1 : d <= 60 ? 2 : d <= 90 ? 3 : 4;
+    B[k].c += x.bal; B[k].n++;
+  });
+  const tot = B.reduce((s, b) => s + b.c, 0);
+  if (!tot) return '';
+  return `<section class="aging" aria-label="Unpaid invoices by age">
+    <div class="aging-h"><h2 class="sec">Who owes you, by age</h2><span class="aging-tot">${money(tot)}</span></div>
+    <div class="aging-bar" role="img" aria-label="${B.filter(b => b.c).map(b => `${b.l}: ${money(b.c)}`).join(', ')}">${B.map((b, i) => b.c ? `<span class="a${i}" style="flex:${b.c} 1 0" title="${b.l}: ${money(b.c)}"></span>` : '').join('')}</div>
+    <div class="aging-legend">${B.map((b, i) => `<div class="ag${b.c ? '' : ' zero'}"><span class="sw a${i}"></span><span class="ag-l">${b.l}</span><span class="ag-v mono">${money(b.c)}</span><span class="ag-n">${b.n ? plural(b.n, 'invoice') : 'None'}</span></div>`).join('')}</div>
+  </section>`;
+}
 function viewInvoices() {
   const f = state.filters.invoices;
   const infos = db.invoices.map(i => [i, iInfo(i)]);
-  const test = {all: () => true, unpaid: x => ['sent','partial','overdue'].includes(x.status), overdue: x => x.status === 'overdue', paid: x => x.status === 'paid', draft: x => x.status === 'draft'};
+  const test = {all: () => true, unpaid: isOpen, overdue: x => x.status === 'overdue', paid: x => x.status === 'paid', draft: x => x.status === 'draft', void: x => x.status === 'void'};
   const n = k => infos.filter(([, x]) => test[k](x)).length;
   const list = infos.filter(([, x]) => test[f](x)).sort((a, b) => b[0].num.localeCompare(a[0].num));
-  const owed = infos.filter(([, x]) => test.unpaid(x)).reduce((s, [, x]) => s + x.bal, 0);
+  const owed = infos.filter(([, x]) => isOpen(x)).reduce((s, [, x]) => s + x.bal, 0);
+  const opts = [['all','All',infos.length],['unpaid','Unpaid',n('unpaid')],['overdue','Overdue',n('overdue')],['paid','Paid',n('paid')],['draft','Draft',n('draft')]];
+  if (n('void')) opts.push(['void','Void',n('void')]);
+  const amt = (i, x) => x.status === 'void' ? `<span class="void-amt">${money(x.total)}</span>` : x.status === 'paid' || x.status === 'draft' || x.bal === x.total ? money(x.total) : `${money(x.bal)}<small>of ${money(x.total)}</small>`;
+  const sub = (i, x) => x.status === 'void' ? 'Voided' : x.status === 'paid' ? `Paid ${fmtDate(lastPayDate(i) || i.date)}` : x.status === 'draft' ? fmtDate(i.date) : `Due ${fmtDate(x.due)}`;
   return `<div class="view-head"><div><h1>Invoices</h1><p class="lede">${money(owed)} outstanding across ${plural(n('unpaid'), 'invoice')}.</p></div><button class="btn primary" data-act="new-invoice">New invoice</button></div>
-  ${chips('invoices', [['all','All',infos.length],['unpaid','Unpaid',n('unpaid')],['overdue','Overdue',n('overdue')],['paid','Paid',n('paid')],['draft','Draft',n('draft')]])}
-  <div class="list">${list.length ? list.map(([i, x]) => docRow('invoice', i, x.status === 'paid' || x.bal === x.total ? money(x.total) : `${money(x.bal)}<small>of ${money(x.total)}</small>`, x.status === 'paid' ? `Paid ${fmtDate(i.payments.map(p => p.date).sort().pop())}` : x.status === 'draft' ? fmtDate(i.date) : `Due ${fmtDate(x.due)}`)).join('') : `<div class="empty">${f === 'overdue' ? 'No overdue invoices.' : 'No invoices here.'}</div>`}</div>`;
+  ${agingHTML(infos)}
+  ${chips('invoices', opts)}
+  <div class="list">${list.length ? list.map(([i, x]) => docRow('invoice', i, amt(i, x), sub(i, x))).join('') : `<div class="empty">${f === 'overdue' ? 'No overdue invoices.' : 'No invoices here.'}</div>`}</div>`;
 }
 
 function clientStats(c) {
-  const inv = db.invoices.filter(i => i.clientId === c.id).map(iInfo);
+  const inv = db.invoices.filter(i => i.clientId === c.id).map(iInfo).filter(x => x.status !== 'void' && x.status !== 'draft');
   return {
     jobs: db.jobs.filter(j => j.clientId === c.id).length,
-    billed: inv.filter(x => x.status !== 'draft').reduce((s, x) => s + x.total, 0),
-    owing: inv.filter(x => ['sent','partial','overdue'].includes(x.status)).reduce((s, x) => s + x.bal, 0),
+    billed: inv.reduce((s, x) => s + x.paid + Math.max(0, x.bal), 0),
+    owing: inv.filter(isOpen).reduce((s, x) => s + Math.max(0, x.bal), 0),
     records: db.quotes.filter(q => q.clientId === c.id).length + db.jobs.filter(j => j.clientId === c.id).length + db.invoices.filter(i => i.clientId === c.id).length,
   };
 }
@@ -562,11 +729,12 @@ function viewClients() {
 
 const VIEWS = {overview:viewOverview, quotes:viewQuotes, jobs:viewJobs, invoices:viewInvoices, clients:viewClients};
 function renderView() { $('#view').innerHTML = VIEWS[state.view](); }
-function renderAll() { renderTabs(); renderView(); renderSheet(); }
+function renderAll() { renderHeader(); renderTabs(); renderView(); renderSheet(); }
 
 /* ---------- document parts ---------- */
 function paperHead(label, num, right) {
-  return `<div class="paper-head"><div><div class="from-name">${esc(BIZ.name)}</div><div class="small muted">${esc(BIZ.addr)} · ${esc(BIZ.phone)}</div><div class="small muted mono">${esc(BIZ.hst)}</div></div>
+  const s = db.settings;
+  return `<div class="paper-head"><div><div class="from-name">${esc(s.name)}</div><div class="small muted">${esc([s.addr, s.phone].filter(Boolean).join(' · '))}</div>${s.hst ? `<div class="small muted mono">Tax reg. ${esc(s.hst)}</div>` : ''}</div>
     <div class="docid"><div class="doc-label">${label}</div><div class="doc-num mono">${esc(num)}</div>${right || ''}</div></div>`;
 }
 function clientBlock(r, editable, label) {
@@ -574,72 +742,94 @@ function clientBlock(r, editable, label) {
   const sel = editable ? `<select class="f" id="f-client" data-f="clientId" data-rerender aria-label="Client">${db.clients.map(x => `<option value="${x.id}"${x.id === r.clientId ? ' selected' : ''}>${esc(x.name || 'Unnamed client')}</option>`).join('')}</select>
     <button class="linkish small" data-act="new-client" data-for="${state.sheet.type}:${r.id}" style="margin-top:6px">Add a new client</button>` : `<strong>${esc(c.name)}</strong>`;
   return `<div class="contact"><span class="lbl">${label}</span>${sel}<span class="small muted">${esc(c.address)}</span>
-    ${c.phone ? `<span class="copyline small"><span class="mono">${esc(c.phone)}</span><button class="icon-btn sm" data-act="copy" data-text="${esc(c.phone)}" data-what="Phone number" aria-label="Copy phone number">${ICON.copy}</button></span>` : ''}</div>`;
+    ${c.phone ? `<span class="copyline small"><span class="mono">${esc(c.phone)}</span><button class="icon-btn sm" data-act="copy" data-text="${esc(c.phone)}" data-what="Phone number copied" aria-label="Copy phone number">${ICON.copy}</button></span>` : ''}</div>`;
 }
 function titleBlock(r, editable, ph) {
   return `<div class="title-wrap">${editable ? `<input class="f title" id="f-title" data-f="title" value="${esc(r.title)}" placeholder="${ph}" aria-label="Job title">` : `<h2 class="doc-title">${esc(r.title || 'Untitled')}</h2>`}</div>`;
 }
 function itemsBlock(r, editable) {
   if (editable) return `<div class="items" data-items>
-    <div class="items-h" aria-hidden="true"><span>Description</span><span>Type</span><span class="r">Qty</span><span>Unit</span><span class="r">Rate</span><span class="r">Amount</span><span></span></div>
+    <div class="items-h" aria-hidden="true"><span>Description</span><span>Type</span><span class="r">Qty</span><span>Unit</span><span class="r">Rate</span><span class="c">Tax</span><span class="r">Amount</span><span></span></div>
     ${r.items.map(it => `<div class="item" data-item="${it.id}">
       <input class="f desc" id="it-${it.id}-desc" data-k="desc" value="${esc(it.desc)}" placeholder="Describe the work or part" aria-label="Description">
       <select class="f" id="it-${it.id}-kind" data-k="kind" aria-label="Type">${Object.entries(KINDS).map(([k, l]) => `<option value="${k}"${it.kind === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
       <input class="f num" id="it-${it.id}-qty" data-k="qty" type="number" inputmode="decimal" step="0.5" min="0" value="${it.qty}" aria-label="Quantity">
       <input class="f" id="it-${it.id}-unit" data-k="unit" value="${esc(it.unit)}" placeholder="unit" aria-label="Unit">
       <input class="f num" id="it-${it.id}-rate" data-k="rate" type="number" inputmode="decimal" step="0.01" min="0" value="${it.rate}" aria-label="Rate in dollars">
+      <label class="tx" title="Charge tax on this line"><input type="checkbox" id="it-${it.id}-tax" data-k="taxable"${it.taxable !== false ? ' checked' : ''} aria-label="Charge tax on this line"><span>Tax</span></label>
       <span class="amt">${money(lineCents(it))}</span>
       <button class="icon-btn sm" data-act="rm-item" aria-label="Remove line">${ICON.x}</button></div>`).join('')}
     </div>
     <div class="add-line"><button class="btn sm" data-act="add-item">Add line</button><span class="pb-label">Price book</span>
       ${PRICEBOOK.map((p, i) => `<button class="chip" data-act="add-preset" data-i="${i}">${esc(p.desc)} <span class="mono">${money(p.rate * 100)}/${p.unit}</span></button>`).join('')}</div>`;
   return `<div class="ro-wrap"><table class="ro"><thead><tr><th>Description</th><th class="r d-only">Qty</th><th class="r d-only">Rate</th><th class="r">Amount</th></tr></thead><tbody>
-    ${r.items.length ? r.items.map(it => `<tr><td>${esc(it.desc || '(no description)')}<small class="d-only">${KINDS[it.kind] || ''}</small><small class="m-only">${it.qty} ${esc(it.unit)} × ${money(it.rate * 100)}</small></td><td class="r d-only">${it.qty} ${esc(it.unit)}</td><td class="r d-only">${money(it.rate * 100)}</td><td class="r">${money(lineCents(it))}</td></tr>`).join('') : `<tr><td colspan="4" class="muted">No line items.</td></tr>`}
+    ${r.items.length ? r.items.map(it => `<tr><td>${esc(it.desc || '(no description)')}<small class="d-only">${KINDS[it.kind] || ''}${it.taxable === false ? ' · no tax' : ''}</small><small class="m-only">${it.qty} ${esc(it.unit)} × ${money(it.rate * 100)}${it.taxable === false ? ' · no tax' : ''}</small></td><td class="r d-only">${it.qty} ${esc(it.unit)}</td><td class="r d-only">${money(it.rate * 100)}</td><td class="r">${money(lineCents(it))}</td></tr>`).join('') : `<tr><td colspan="4" class="muted">No line items.</td></tr>`}
   </tbody></table></div>`;
 }
+const trow = (l, v, c = '') => `<div class="tot-row ${c}"><span>${l}</span><span class="mono">${v}</span></div>`;
 function totalsHTML(r, type) {
-  const t = totals(r.items);
+  const t = totals(r);
+  let html = trow('Subtotal', money(t.sub));
+  if (t.disc) html += trow(`Discount${r.discount.mode === 'pct' ? ` (${fmtRate(r.discount.value)}%)` : ''}`, '−' + money(t.disc));
+  if (t.taxableSub > 0) t.taxes.forEach(x => { html += trow(`${x.label} ${fmtRate(x.rate)}%${t.taxBase !== t.sub - t.disc ? ` <small>on ${money(t.taxBase)}</small>` : ''}`, money(x.cents)); });
+  html += trow('Total', money(t.total), 'grand');
+  if (type === 'invoice') {
+    const x = iInfo(r);
+    x.deps.forEach(d => { html += trow(`Deposit received <small>${esc(d.inv.num)}</small>`, '−' + money(d.cents), 'credit'); });
+    if (x.paid) html += trow('Paid', '−' + money(x.paid), 'credit');
+    if (x.paid || x.dep) html += trow('Balance due', money(Math.max(0, x.bal)), 'grand');
+  }
   const mix = Object.keys(KINDS).map(k => [KINDS[k], r.items.filter(i => i.kind === k).reduce((s, i) => s + lineCents(i), 0)]).filter(([, v]) => v);
-  let html = `<div class="tot-row"><span>Subtotal</span><span class="mono">${money(t.sub)}</span></div>
-    <div class="tot-row"><span>${TAX_LABEL}</span><span class="mono">${money(t.tax)}</span></div>
-    <div class="tot-row grand"><span>Total</span><span class="mono">${money(t.total)}</span></div>`;
-  if (type === 'invoice') { const x = iInfo(r); if (x.paid) html += `<div class="tot-row"><span>Paid</span><span class="mono">−${money(x.paid)}</span></div><div class="tot-row grand"><span>Balance due</span><span class="mono">${money(Math.max(0, x.bal))}</span></div>`; }
   if (mix.length > 1) html += `<div class="mix">${mix.map(([l, v]) => `${l} ${money(v)}`).join(' · ')}</div>`;
+  if (r.kind === 'deposit') html += `<div class="mix">No tax on deposits. Tax is charged on the final invoice.</div>`;
   return html;
 }
 const stamp = (text, tone, sub) => `<div class="stamp t-${tone}" aria-label="${text}">${text}${sub ? `<small>${sub}</small>` : ''}</div>`;
-const paperFoot = (r, type, stampHTML) => `<div class="paper-foot">${stampHTML || '<span></span>'}<div class="totals" data-totals>${totalsHTML(r, type)}</div></div>`;
+const discHTML = r => { const d = r.discount || {mode:'pct', value:''}; return `<div class="field"><label class="lbl" for="f-disc-v">Discount</label><div class="disc"><select class="f" id="f-disc-m" data-disc="mode" aria-label="Discount type"><option value="pct"${d.mode !== 'amt' ? ' selected' : ''}>%</option><option value="amt"${d.mode === 'amt' ? ' selected' : ''}>$</option></select><input class="f num" id="f-disc-v" data-disc="value" type="number" inputmode="decimal" min="0" step="0.5" value="${d.value || ''}" placeholder="0"></div></div>`; };
+const paperFoot = (r, type, left) => `<div class="paper-foot">${left || '<span></span>'}<div class="totals" data-totals>${totalsHTML(r, type)}</div></div>`;
 function notesBlock(r, editable, label, ph) {
   if (editable) return `<div class="notes"><label class="lbl" for="f-notes">${label}</label><textarea class="f" id="f-notes" data-f="notes" placeholder="${ph}">${esc(r.notes)}</textarea></div>`;
   return r.notes ? `<div class="notes"><span class="lbl">${label}</span><p>${esc(r.notes)}</p></div>` : '';
 }
 const bar = (num, pillHTML, sub) => `<div class="sheet-bar"><button class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button><div class="sb-title"><span>${esc(num)}</span>${pillHTML}</div><span class="sb-sub">${sub || ''}</span></div>`;
 const delBtn = what => `<button class="btn danger" data-act="del" id="del-btn">Delete ${what}</button>`;
-const copyBtn = `<button class="btn" data-act="copy-doc">${ICON.copy}Copy as text</button>`;
+const docTools = (extra = '') => `<div class="doc-tools">${extra}<button class="btn sm" data-act="copy-doc">${ICON.copy}Copy as text</button>${canPrint ? `<button class="btn sm" data-act="print">${ICON.print}Print or save PDF</button>` : ''}</div>`;
+function depositBlock(src, type) {
+  const qid = type === 'quote' ? src.id : src.quoteId;
+  const jid = type === 'job' ? src.id : src.jobId;
+  const d = depositOf(qid, jid);
+  if (d) return `<div class="contact"><span class="lbl">Deposit</span><span><button class="linkish" data-open="invoice:${d.id}">${esc(d.num)}</button> · ${money(totals(d).total)}</span><span>${pill('invoice', iInfo(d).status)}</span></div>`;
+  const pct = +db.settings.depositPct;
+  const eligible = type === 'quote' ? src.status === 'accepted' : (src.status !== 'done' && !src.invoiceId);
+  if (!eligible || !(pct > 0) || !totals(src).total) return '';
+  return `<div class="contact"><span class="lbl">Deposit</span><button class="linkish" data-act="deposit">Request ${fmtRate(pct)}% deposit · ${money(Math.round(totals(src).total * pct / 100))}</button><span class="small muted">Credited on the final invoice</span></div>`;
+}
 
 /* ---------- sheets ---------- */
 function sheetQuote(q) {
   const ed = q.status === 'draft';
-  const st = q.status === 'accepted' ? stamp('Accepted', 'ok', q.acceptedOn ? fmtDate(q.acceptedOn) : '') : q.status === 'declined' ? stamp('Declined', 'bad') : '';
   const job = q.jobId && byId(db.jobs, q.jobId);
+  const left = ed ? discHTML(q) : q.status === 'accepted' ? stamp('Accepted', 'ok', q.acceptedOn ? fmtDate(q.acceptedOn) : '') : q.status === 'declined' ? stamp('Declined', 'bad') : '';
   let foot;
-  if (q.status === 'draft') foot = `${delBtn('quote')}<span class="spacer"></span>${copyBtn}<button class="btn primary" data-act="q-send">Mark as sent</button>`;
+  if (q.status === 'draft') foot = `${delBtn('quote')}<span class="spacer"></span><button class="btn primary" data-act="q-send">Mark as sent</button>`;
   else if (q.status === 'sent') foot = `<button class="btn ghost" data-act="q-draft">Edit quote</button><span class="spacer"></span><button class="btn" data-act="q-decline">Client declined</button><button class="btn primary" data-act="q-accept">Client accepted</button>`;
-  else if (q.status === 'accepted') foot = `<span class="spacer"></span>${copyBtn}${job ? `<button class="btn primary" data-open="job:${job.id}">Open ${esc(job.num)}</button>` : `<button class="btn primary" data-act="q-schedule">Schedule job</button>`}`;
+  else if (q.status === 'accepted') foot = `<span class="spacer"></span>${job ? `<button class="btn primary" data-open="job:${job.id}">Open ${esc(job.num)}</button>` : `<button class="btn primary" data-act="q-schedule">Schedule job</button>`}`;
   else foot = `${delBtn('quote')}<span class="spacer"></span><button class="btn" data-act="q-draft">Reopen as draft</button>`;
   const sub = q.status === 'sent' && q.sentOn ? `Sent ${relDay(q.sentOn).toLowerCase()}` : q.status === 'draft' ? 'Changes save automatically' : '';
   return `${bar(q.num, pill('quote', q.status), sub)}
   <div class="sheet-body">
-    ${q.status === 'sent' ? `<p class="small muted" style="margin:0 0 12px">This quote has been sent, so it's locked. Choose <strong>Edit quote</strong> to revise it and send it again.</p>` : ''}
+    ${docTools()}
+    ${q.status === 'sent' ? `<p class="lock-note">This quote has been sent, so it's locked. Choose <strong>Edit quote</strong> to revise it and send it again.</p>` : ''}
     <article class="paper">
       ${paperHead('Quote', q.num, `<div class="small muted">Issued ${fmtLong(q.date)}</div><div class="small muted">Valid until ${fmtLong(addDays(q.date, 30))}</div>`)}
       <div class="meta">${clientBlock(q, ed, 'Prepared for')}
-        ${job ? `<div class="contact"><span class="lbl">Work order</span><button class="linkish" data-open="job:${job.id}">${esc(job.num)} · ${fmtDate(job.date)}</button></div>` : ''}</div>
+        ${job ? `<div class="contact"><span class="lbl">Work order</span><button class="linkish" data-open="job:${job.id}">${esc(job.num)} · ${fmtDate(job.date)}</button></div>` : ''}
+        ${depositBlock(q, 'quote')}</div>
       ${titleBlock(q, ed, 'What is the job? e.g. Kitchen backsplash')}
       ${itemsBlock(q, ed)}
-      ${paperFoot(q, 'quote', st)}
+      ${paperFoot(q, 'quote', left)}
       ${notesBlock(q, ed, 'Notes & exclusions', 'What is and isn’t included, timing, access…')}
-      <div class="terms"><span>Prices in CAD. ${TAX_LABEL} applies. Quote valid for 30 days.</span><span>To accept, reply to this quote or call ${esc(BIZ.phone)}.</span></div>
+      <div class="terms"><span>Prices in CAD. ${taxSummary(q.taxes || docTaxes())} applies where marked. Quote valid for 30 days.</span>${+db.settings.depositPct > 0 ? `<span>A ${fmtRate(db.settings.depositPct)}% deposit may be requested to book the work.</span>` : ''}<span>To accept, reply to this quote or call ${esc(db.settings.phone)}.</span></div>
     </article>
   </div>
   <div class="sheet-foot">${foot}</div>`;
@@ -654,19 +844,21 @@ function sheetJob(j) {
   if (j.status === 'scheduled') foot = `${ed ? delBtn('job') : ''}<span class="spacer"></span><button class="btn" data-act="j-start">Start job</button><button class="btn primary" data-act="j-done">Mark done</button>`;
   else if (j.status === 'in_progress') foot = `<button class="btn ghost" data-act="j-reopen">Back to scheduled</button><span class="spacer"></span><button class="btn primary" data-act="j-done">Mark done</button>`;
   else if (!invc) foot = `<button class="btn ghost" data-act="j-reopen">Reopen job</button><span class="spacer"></span><button class="btn primary" data-act="j-invoice">Create invoice</button>`;
-  else foot = `<span class="spacer"></span>${copyBtn}<button class="btn primary" data-open="invoice:${invc.id}">Open ${esc(invc.num)}</button>`;
+  else foot = `<span class="spacer"></span><button class="btn primary" data-open="invoice:${invc.id}">Open ${esc(invc.num)}</button>`;
   return `${bar(j.num, pill('job', j.status), relDay(j.date))}
   <div class="sheet-body">
+    ${docTools()}
     <article class="paper">
       ${paperHead('Work order', j.num, `<label class="small muted" for="f-date" style="display:block;margin-top:6px">Scheduled</label><input class="f mono" type="date" id="f-date" data-f="date" data-rerender value="${j.date}" style="max-width:170px;text-align:right">`)}
       <div class="meta">${clientBlock(j, ed && !quote, 'Client & site')}
         <div class="contact"><span class="lbl">Paperwork</span>
           ${quote ? `<span>Quote <button class="linkish" data-open="quote:${quote.id}">${esc(quote.num)}</button></span>` : `<span class="muted small">No quote. Booked directly.</span>`}
-          ${invc ? `<span>Invoice <button class="linkish" data-open="invoice:${invc.id}">${esc(invc.num)}</button></span>` : ''}</div></div>
+          ${invc ? `<span>Invoice <button class="linkish" data-open="invoice:${invc.id}">${esc(invc.num)}</button></span>` : ''}</div>
+        ${depositBlock(j, 'job')}</div>
       ${titleBlock(j, ed, 'What is the job?')}
       ${ed ? `<p class="small muted" style="margin:4px 0 0">Add extra work or parts found on site. Everything here carries over to the invoice.</p>` : ''}
       ${itemsBlock(j, ed)}
-      ${paperFoot(j, 'job', j.status === 'done' ? stamp('Complete', 'ok', fmtDate(j.date)) : '')}
+      ${paperFoot(j, 'job', ed ? discHTML(j) : j.status === 'done' ? stamp('Complete', 'ok', fmtDate(j.date)) : '')}
     </article>
     <section class="panel"><h3>Checklist · ${doneCount}/${j.checklist.length}</h3>
       ${j.checklist.map(c => `<div class="check${c.done ? ' done' : ''}"><input type="checkbox" id="ck-${c.id}" data-chk="${c.id}"${c.done ? ' checked' : ''}><label for="ck-${c.id}">${esc(c.t)}</label><button class="icon-btn sm" data-act="chk-rm" data-id="${c.id}" aria-label="Remove checklist item">${ICON.x}</button></div>`).join('')}
@@ -677,37 +869,58 @@ function sheetJob(j) {
   <div class="sheet-foot">${foot}</div>`;
 }
 
+function lateFeeHTML(inv, x) {
+  const r = +db.settings.lateRate;
+  if (x.status !== 'overdue' || !(r > 0)) return '';
+  const last = inv.items.filter(i => i.fee).map(i => i.feeDate).sort().pop();
+  const wait = last ? 30 - daysBetween(last, TODAY) : 0;
+  const fee = Math.round(x.bal * r / 100);
+  return `<div class="late"><span><strong>${plural(x.daysOver, 'day')} overdue.</strong> Your late fee is ${fmtRate(r)}% per month on the unpaid balance.</span>
+    ${wait > 0 ? `<span class="small">Late fee added ${fmtDate(last)}. The next one can be added ${fmtDate(addDays(last, 30))}.</span>` : `<button class="btn sm" data-act="i-latefee">Add late fee · ${money(fee)}</button>`}</div>`;
+}
 function sheetInvoice(inv) {
   const x = iInfo(inv);
   const ed = x.status === 'draft';
   const job = inv.jobId && byId(db.jobs, inv.jobId);
-  const st = x.status === 'paid' ? stamp('Paid', 'ok', fmtDate(inv.payments.map(p => p.date).sort().pop())) : x.status === 'overdue' ? stamp('Overdue', 'bad', `${plural(daysBetween(x.due, TODAY), 'day')}`) : '';
-  const terms = ed ? `<label class="small muted" for="f-terms" style="display:block;margin-top:6px">Terms</label><select class="f" id="f-terms" data-f="dueDays" data-rerender style="max-width:170px">${[[0,'Due on receipt'],[15,'Net 15'],[30,'Net 30']].map(([v, l]) => `<option value="${v}"${+inv.dueDays === v ? ' selected' : ''}>${l}</option>`).join('')}</select>` : '';
+  const quote = inv.quoteId && byId(db.quotes, inv.quoteId);
+  const left = ed ? discHTML(inv) : x.status === 'paid' ? stamp('Paid', 'ok', fmtDate(lastPayDate(inv) || TODAY)) : x.status === 'overdue' ? stamp('Overdue', 'bad', plural(x.daysOver, 'day')) : x.status === 'void' ? stamp('Void', 'mute') : '';
+  const terms = ed ? `<label class="small muted" for="f-terms" style="display:block;margin-top:6px">Terms</label><select class="f" id="f-terms" data-f="dueDays" data-num data-rerender style="max-width:170px">${TERMS.map(([v, l]) => `<option value="${v}"${+inv.dueDays === v ? ' selected' : ''}>${l}</option>`).join('')}</select>` : '';
+  const canVoid = !inv.payments.length;
+  const voidBtn = `<button class="btn danger" data-act="i-void" id="void-btn">Void invoice</button>`;
   let foot;
-  if (ed) foot = `${delBtn('invoice')}<span class="spacer"></span>${copyBtn}<button class="btn primary" data-act="i-send">Mark as sent</button>`;
-  else if (x.status === 'paid') foot = `<span class="spacer"></span>${copyBtn}${job ? `<button class="btn" data-open="job:${job.id}">Open ${esc(job.num)}</button>` : ''}`;
-  else foot = `${inv.payments.length ? '' : `<button class="btn ghost" data-act="i-draft">Edit invoice</button>`}<span class="spacer"></span>${copyBtn}<button class="btn primary" data-act="pay-full">Paid in full · ${money(x.bal)}</button>`;
-  const sub = x.status === 'draft' ? 'Changes save automatically' : x.status === 'paid' ? '' : `Due ${relDay(x.due).toLowerCase()}`;
-  return `${bar(inv.num, pill('invoice', x.status), sub)}
-  <div class="sheet-body">
-    <article class="paper">
-      ${paperHead('Invoice', inv.num, `<div class="small muted">Issued ${fmtLong(inv.date)}</div><div class="small${x.status === 'overdue' ? '' : ' muted'}"${x.status === 'overdue' ? ' style="color:var(--bad);font-weight:600"' : ''}>Due ${fmtLong(x.due)}</div>${terms}`)}
-      <div class="meta">${clientBlock(inv, ed && !job, 'Bill to')}
-        ${job ? `<div class="contact"><span class="lbl">For work order</span><button class="linkish" data-open="job:${job.id}">${esc(job.num)}</button><span class="small muted">Completed ${fmtDate(job.date)}</span></div>` : ''}</div>
-      ${titleBlock(inv, ed, 'What was the work?')}
-      ${itemsBlock(inv, ed)}
-      ${paperFoot(inv, 'invoice', st)}
-      ${notesBlock(inv, ed, 'Notes', 'Thank-you note, warranty info…')}
-      <div class="terms"><span>Pay by e-Transfer to <span class="mono">${esc(BIZ.etransfer)}</span> (auto-deposit on).</span><span>Cheques payable to ${esc(BIZ.name)}. ${TAX_LABEL} included above.</span></div>
-    </article>
-    ${ed ? '' : `<section class="panel"><h3>Payments</h3>
-      ${inv.payments.length ? inv.payments.map(p => `<div class="pay"><span class="mono small">${fmtDate(p.date)}</span><span>${esc(p.method)}</span><span class="mono">${money(p.cents)}</span><button class="icon-btn sm" data-act="pay-rm" data-id="${p.id}" aria-label="Remove payment">${ICON.x}</button></div>`).join('') : `<p class="small muted" style="margin:0">No payments recorded yet.</p>`}
+  if (x.status === 'void') foot = `<span class="spacer"></span><button class="btn" data-act="close">Close</button>`;
+  else if (ed) foot = `${inv.everSent ? voidBtn : delBtn('invoice')}<span class="spacer"></span><button class="btn primary" data-act="i-send">Mark as sent</button>`;
+  else if (x.status === 'paid') foot = `<span class="spacer"></span>${job ? `<button class="btn" data-open="job:${job.id}">Open ${esc(job.num)}</button>` : ''}<button class="btn" data-act="close">Close</button>`;
+  else foot = `${canVoid ? `<button class="btn ghost" data-act="i-draft">Edit invoice</button>${voidBtn}` : ''}<span class="spacer"></span><button class="btn primary" data-act="pay-full">Paid in full · ${money(x.bal)}</button>`;
+  const sub = ed ? 'Changes save automatically' : isOpen(x) ? `Due ${relDay(x.due).toLowerCase()}` : '';
+  const s = db.settings;
+  const payments = (ed || x.status === 'void') ? '' : `<section class="panel"><h3>Payments</h3>
+      ${x.deps.map(d => `<div class="pay"><span class="mono small">${fmtDate(lastPayDate(d.inv))}</span><span>Deposit <button class="linkish" data-open="invoice:${d.inv.id}">${esc(d.inv.num)}</button></span><span class="mono">${money(d.cents)}</span><span></span></div>`).join('')}
+      ${inv.payments.map(p => `<div class="pay"><span class="mono small">${fmtDate(p.date)}</span><span>${esc(p.method)}</span><span class="mono">${money(p.cents)}</span><button class="icon-btn sm" data-act="pay-rm" data-id="${p.id}" aria-label="Remove payment">${ICON.x}</button></div>`).join('')}
+      ${inv.payments.length || x.deps.length ? '' : `<p class="small muted" style="margin:0">No payments recorded yet.</p>`}
       ${x.bal > 0 ? `<div class="pay-form">
         <div class="field"><label class="lbl" for="pay-amt">Amount</label><input class="f num" id="pay-amt" type="number" inputmode="decimal" step="0.01" min="0" value="${(x.bal / 100).toFixed(2)}"></div>
         <div class="field"><label class="lbl" for="pay-method">Method</label><select class="f" id="pay-method">${METHODS.map(m => `<option>${m}</option>`).join('')}</select></div>
         <div class="field"><label class="lbl" for="pay-date">Received</label><input class="f mono" id="pay-date" type="date" value="${TODAY}"></div>
         <button class="btn" data-act="pay">Record payment</button></div>` : ''}
-    </section>`}
+      ${lateFeeHTML(inv, x)}
+    </section>`;
+  return `${bar(inv.num, pill('invoice', x.status), sub)}
+  <div class="sheet-body">
+    ${docTools(isOpen(x) ? `<button class="btn sm" data-act="i-remind">${ICON.bell}Copy ${x.status === 'overdue' ? 'overdue' : 'friendly'} reminder</button>` : '')}
+    ${x.status === 'void' ? `<p class="lock-note">This invoice was voided. It stays on file so your invoice numbers have no gaps, but it no longer counts toward what you're owed.</p>` : isOpen(x) ? `<p class="lock-note">Sent invoices are locked. ${canVoid ? 'Choose <strong>Edit invoice</strong> to change it, or void it and start a new one.' : 'It has payments recorded, so it can no longer be edited.'}</p>` : ''}
+    <article class="paper">
+      ${paperHead(inv.kind === 'deposit' ? 'Deposit' : 'Invoice', inv.num, `<div class="small muted">Issued ${fmtLong(inv.date)}</div><div class="small${x.status === 'overdue' ? '' : ' muted'}"${x.status === 'overdue' ? ' style="color:var(--bad);font-weight:600"' : ''}>${+inv.dueDays ? `Due ${fmtLong(x.due)}` : 'Due on receipt'}</div>${terms}`)}
+      <div class="meta">${clientBlock(inv, ed && !job, 'Bill to')}
+        ${job || quote ? `<div class="contact"><span class="lbl">${inv.kind === 'deposit' ? 'To book' : 'For work order'}</span>${job ? `<span><button class="linkish" data-open="job:${job.id}">${esc(job.num)}</button>${job.status === 'done' ? ` <span class="small muted">completed ${fmtDate(job.date)}</span>` : ` <span class="small muted">${fmtDate(job.date)}</span>`}</span>` : ''}${quote ? `<span class="small">Quote <button class="linkish" data-open="quote:${quote.id}">${esc(quote.num)}</button></span>` : ''}</div>` : ''}</div>
+      ${titleBlock(inv, ed, 'What was the work?')}
+      ${itemsBlock(inv, ed)}
+      ${paperFoot(inv, 'invoice', left)}
+      ${notesBlock(inv, ed, 'Notes', 'Thank-you note, warranty info…')}
+      <div class="terms"><span>Pay by e-Transfer to <span class="mono">${esc(s.etransfer)}</span> (auto-deposit on). Cheques payable to ${esc(s.name)}.</span>${+s.lateRate > 0 && inv.kind !== 'deposit' ? `<span>Overdue balances are charged ${fmtRate(s.lateRate)}% per month.</span>` : ''}</div>
+    </article>
+    ${payments}
+    <section class="panel"><h3>Activity</h3><ol class="log">${[...(inv.log || [])].reverse().map(e => `<li><span class="mono">${fmtDate(e.date)}</span><span>${esc(e.text)}</span></li>`).join('')}</ol></section>
   </div>
   <div class="sheet-foot">${foot}</div>`;
 }
@@ -716,9 +929,9 @@ function sheetClient(c) {
   const s = clientStats(c);
   const back = state.returnTo && byId(db[COL[state.returnTo.type]], state.returnTo.id);
   const hist = [
-    ...db.quotes.filter(q => q.clientId === c.id).map(q => ({t:'quote', r:q, d:q.date, st:pill('quote', q.status), amt:totals(q.items).total})),
-    ...db.jobs.filter(j => j.clientId === c.id).map(j => ({t:'job', r:j, d:j.date, st:pill('job', j.status), amt:totals(j.items).total})),
-    ...db.invoices.filter(i => i.clientId === c.id).map(i => ({t:'invoice', r:i, d:i.date, st:pill('invoice', iInfo(i).status), amt:totals(i.items).total})),
+    ...db.quotes.filter(q => q.clientId === c.id).map(q => ({t:'quote', r:q, d:q.date, st:pill('quote', q.status), amt:totals(q).total})),
+    ...db.jobs.filter(j => j.clientId === c.id).map(j => ({t:'job', r:j, d:j.date, st:pill('job', j.status), amt:totals(j).total})),
+    ...db.invoices.filter(i => i.clientId === c.id).map(i => ({t:'invoice', r:i, d:i.date, st:pill('invoice', iInfo(i).status), amt:totals(i).total})),
   ].sort((a, b) => b.d.localeCompare(a.d));
   const field = (k, l, type = 'text', ph = '') => `<div class="field"><label class="lbl" for="cl-${k}">${l}</label><input class="f" id="cl-${k}" type="${type}" data-f="${k}" value="${esc(c[k])}" placeholder="${ph}"></div>`;
   const foot = back
@@ -727,7 +940,7 @@ function sheetClient(c) {
   return `${bar(c.name || 'New client', '', s.owing ? `${money(s.owing)} owing` : '')}
   <div class="sheet-body">
     <section class="panel" style="margin-top:0"><h3>Contact</h3>
-      <div class="form-grid" style="padding-top:0">${field('name', 'Name or business', 'text', 'e.g. Sam Patel')}${field('phone', 'Phone', 'tel', '905-555-0123')}${field('email', 'Email', 'email', 'name@example.com')}${field('address', 'Site address', 'text', 'Street, town')}</div>
+      <div class="form-grid">${field('name', 'Name or business', 'text', 'e.g. Sam Patel')}${field('phone', 'Phone', 'tel', '905-555-0123')}${field('email', 'Email', 'email', 'name@example.com')}${field('address', 'Site address', 'text', 'Street, town')}</div>
     </section>
     <section class="panel"><h3>History · ${money(s.billed)} billed</h3>
       ${hist.length ? `<div class="list">${hist.map(h => `<button class="row" data-open="${h.t}:${h.r.id}"><span class="c-num">${esc(h.r.num)}</span><span class="c-main"><strong>${esc(h.r.title || 'Untitled')}</strong><small>${h.t === 'job' ? 'Work order' : h.t[0].toUpperCase() + h.t.slice(1)}</small></span><span class="c-date">${fmtDate(h.d)}</span><span class="c-pill">${h.st}</span><span class="c-amt">${money(h.amt)}</span></button>`).join('')}</div>` : `<p class="small muted" style="margin:0">No quotes, jobs or invoices yet.</p>`}
@@ -736,7 +949,34 @@ function sheetClient(c) {
   <div class="sheet-foot">${foot}</div>`;
 }
 
-const SHEETS = {quote:sheetQuote, job:sheetJob, invoice:sheetInvoice, client:sheetClient};
+function sheetSettings(s) {
+  const f = (k, l, type = 'text', ph = '', extra = '') => `<div class="field"><label class="lbl" for="st-${k}">${l}</label><input class="f" id="st-${k}" type="${type}" data-f="${k}" ${extra} value="${esc(s[k])}" placeholder="${ph}"></div>`;
+  const p = PROVINCES[s.province] || PROVINCES.ON;
+  return `${bar('Settings', '', '')}
+  <div class="sheet-body">
+    <section class="panel" style="margin-top:0"><h3>Your business</h3>
+      <div class="form-grid">${f('name', 'Business name')}${f('addr', 'City and province')}${f('phone', 'Phone', 'tel')}${f('email', 'Email', 'email')}${f('hst', 'GST/HST registration number', 'text', '12345 6789 RT0001')}${f('etransfer', 'e-Transfer email', 'email')}</div>
+    </section>
+    <section class="panel"><h3>Sales tax</h3>
+      <div class="form-grid">
+        <div class="field"><label class="lbl" for="st-province">Province or territory</label><select class="f" id="st-province" data-f="province" data-rerender>${Object.entries(PROVINCES).map(([k, v]) => `<option value="${k}"${k === s.province ? ' selected' : ''}>${v.name}</option>`).join('')}</select></div>
+        <div class="field"><span class="lbl">Charged on new documents</span><span class="mono">${taxSummary(p.taxes)}</span></div>
+      </div>
+      <p class="small muted">Quotes and invoices you've already made keep the rate they were created with. You can turn tax off for any line, for example owner-supplied parts or interest charges. Rules for PST on labour vary by province, so check with your accountant.</p>
+    </section>
+    <section class="panel"><h3>Invoicing</h3>
+      <div class="form-grid">
+        <div class="field"><label class="lbl" for="st-terms">Default payment terms</label><select class="f" id="st-terms" data-f="terms" data-num>${TERMS.map(([v, l]) => `<option value="${v}"${+s.terms === v ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+        ${f('lateRate', 'Late fee, % per month', 'number', '2', 'data-num step="0.5" min="0" inputmode="decimal"')}
+        ${f('depositPct', 'Deposit, % of quote total', 'number', '30', 'data-num step="5" min="0" max="100" inputmode="decimal"')}
+      </div>
+      <p class="small muted">Set the late fee or deposit to 0 to turn it off.</p>
+    </section>
+  </div>
+  <div class="sheet-foot"><span class="spacer"></span><button class="btn primary" data-act="close">Done</button></div>`;
+}
+
+const SHEETS = {quote:sheetQuote, job:sheetJob, invoice:sheetInvoice, client:sheetClient, settings:sheetSettings};
 function renderSheet() {
   const el = $('#sheet');
   const rec = getRec();
@@ -770,12 +1010,12 @@ function closeSheet() {
     }
   }
   state.sheet = null; state.returnTo = null;
-  renderSheet(); renderTabs(); renderView();
+  renderSheet(); renderHeader(); renderTabs(); renderView();
 }
 
 /* ---------- actions ---------- */
 let toastTimer;
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2800); }
 function commit() { save(); renderTabs(); renderView(); renderSheet(); }
 function arm(btn, label) {
   if (btn.dataset.armed) return true;
@@ -783,36 +1023,68 @@ function arm(btn, label) {
   setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = old; btn.classList.remove('armed'); } }, 3500);
   return false;
 }
-async function copyText(text, what) {
-  try { if (!navigator.clipboard) throw new Error('no clipboard'); await navigator.clipboard.writeText(text); toast(`${what} copied`); }
-  catch (e) { const box = $('#copyfall'); const ta = $('#copyfall-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); }
+function copyText(text, msg) {
+  const fallback = () => { const box = $('#copyfall'); const ta = $('#copyfall-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
+  try {
+    if (!navigator.clipboard) throw new Error('no clipboard');
+    navigator.clipboard.writeText(text).then(() => toast(msg), fallback);
+  } catch (e) { fallback(); }
 }
 function docText(type, r) {
-  const label = {quote:'Quote', job:'Work order', invoice:'Invoice'}[type];
-  const c = client(r.clientId), t = totals(r.items);
-  const out = [`${label} ${r.num} from ${BIZ.name}`];
+  const s = db.settings;
+  const label = {quote:'Quote', job:'Work order', invoice: r.kind === 'deposit' ? 'Deposit invoice' : 'Invoice'}[type];
+  const c = client(r.clientId), t = totals(r);
+  const out = [`${label} ${r.num} from ${s.name}`];
   if (r.title) out.push(r.title);
   out.push(`For: ${c.name}${c.address ? ', ' + c.address : ''}`, `Date: ${fmtLong(r.date)}`);
   const x = type === 'invoice' ? iInfo(r) : null;
-  if (x) out.push(`Due: ${fmtLong(x.due)}`);
+  if (x) out.push(+r.dueDays ? `Due: ${fmtLong(x.due)}` : 'Due on receipt');
   out.push('');
-  r.items.forEach(it => out.push(`${it.qty} ${it.unit}  ${it.desc || '(no description)'} @ ${money(it.rate * 100)} = ${money(lineCents(it))}`));
-  out.push('', `Subtotal: ${money(t.sub)}`, `${TAX_LABEL}: ${money(t.tax)}`, `Total: ${money(t.total)}`);
-  if (x) { if (x.paid) out.push(`Paid: ${money(x.paid)}`); out.push(`Balance due: ${money(Math.max(0, x.bal))}`, '', `Pay by e-Transfer to ${BIZ.etransfer}`); }
+  r.items.forEach(it => out.push(`${it.qty} ${it.unit}  ${it.desc || '(no description)'} @ ${money(it.rate * 100)} = ${money(lineCents(it))}${it.taxable === false ? ' (no tax)' : ''}`));
+  out.push('', `Subtotal: ${money(t.sub)}`);
+  if (t.disc) out.push(`Discount: -${money(t.disc)}`);
+  if (t.taxableSub > 0) t.taxes.forEach(tx => out.push(`${tx.label} ${fmtRate(tx.rate)}%: ${money(tx.cents)}`));
+  out.push(`Total: ${money(t.total)}`);
+  if (x) {
+    x.deps.forEach(d => out.push(`Deposit received (${d.inv.num}): -${money(d.cents)}`));
+    if (x.paid) out.push(`Paid: -${money(x.paid)}`);
+    out.push(`Balance due: ${money(Math.max(0, x.bal))}`, '', `Pay by e-Transfer to ${s.etransfer}`);
+    if (+s.lateRate > 0 && r.kind !== 'deposit') out.push(`Overdue balances are charged ${fmtRate(s.lateRate)}% per month.`);
+  }
   if (type === 'quote') out.push('', 'Valid for 30 days. Reply to accept.');
   if (r.notes) out.push('', r.notes);
+  if (s.hst) out.push('', `Tax reg. ${s.hst}`);
+  return out.join('\n');
+}
+function reminderText(inv) {
+  const s = db.settings, x = iInfo(inv), c = client(inv.clientId);
+  const what = inv.title ? `for ${inv.title}` : '';
+  const out = [`Hi ${c.name},`, ''];
+  if (x.status === 'overdue') {
+    out.push(`Invoice ${inv.num} ${what} was due on ${fmtLong(x.due)} and is now ${plural(x.daysOver, 'day')} past due. The balance owing is ${money(x.bal)}.`.replace('  ', ' '));
+    if (+s.lateRate > 0 && inv.kind !== 'deposit') out.push('', `As per our terms, overdue balances are charged ${fmtRate(s.lateRate)}% per month.`);
+  } else {
+    out.push(`A friendly reminder that invoice ${inv.num} ${what} is due ${daysBetween(TODAY, x.due) === 0 ? 'today' : `on ${fmtLong(x.due)}`}. The balance is ${money(x.bal)}.`.replace('  ', ' '));
+  }
+  out.push('', `You can pay by e-Transfer to ${s.etransfer}. If you've already sent payment, thank you, and please ignore this note.`, '', s.name, s.phone);
   return out.join('\n');
 }
 function newQuote(clientId) {
-  const q = {id:uid(), num:'Q-' + db.seq.q++, clientId, title:'', date:TODAY, status:'draft', items:[blankItem()], notes:'', jobId:null};
+  const q = {id:uid(), num:'Q-' + db.seq.q++, clientId, title:'', date:TODAY, status:'draft', items:[blankItem()], taxes:docTaxes(), discount:null, notes:'', jobId:null};
   db.quotes.push(q); save(); renderTabs(); renderView(); openSheet('quote', q.id);
   const t = $('#f-title'); if (t) t.focus();
   toast(`Started ${q.num}`);
 }
 function invoiceFromJob(j) {
-  const inv = {id:uid(), num:'INV-' + db.seq.i++, clientId:j.clientId, jobId:j.id, title:j.title, date:TODAY, dueDays:15, sent:false, items:clone(j.items), notes:'Thanks for your business.', payments:[]};
+  const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'standard', clientId:j.clientId, jobId:j.id, quoteId:j.quoteId || null, title:j.title, date:TODAY, dueDays:+db.settings.terms, sent:false, everSent:false, void:false,
+    items:clone(j.items), taxes:taxesOf(j), discount:j.discount ? {...j.discount} : null, notes:'Thanks for your business.', payments:[], log:[ev(TODAY, `Created from ${j.num}`)]};
+  db.invoices.filter(d => d.kind === 'deposit' && !d.void && !d.payments.length && ((inv.quoteId && d.quoteId === inv.quoteId) || d.jobId === j.id)).forEach(d => {
+    d.void = true; d.log.push(ev(TODAY, `Voided: unpaid, replaced by ${inv.num}`)); inv.log.push(ev(TODAY, `Unpaid deposit ${d.num} voided`));
+  });
+  const deps = depositsFor(inv);
+  if (deps.length) inv.log.push(ev(TODAY, `Deposit ${deps.map(d => d.inv.num).join(', ')} credited`));
   db.invoices.push(inv); j.invoiceId = inv.id; save(); renderTabs(); renderView(); openSheet('invoice', inv.id);
-  toast(`${inv.num} drafted from ${j.num}`);
+  toast(`${inv.num} drafted from ${j.num}${deps.length ? ', deposit credited' : ''}`);
 }
 
 document.addEventListener('click', e => {
@@ -823,8 +1095,11 @@ document.addEventListener('click', e => {
   const act = a.dataset.act;
   const rec = getRec();
   const type = state.sheet && state.sheet.type;
+  const log = (r, text) => { (r.log = r.log || []).push(ev(TODAY, text)); };
   switch (act) {
     case 'close': closeSheet(); break;
+    case 'settings': openSheet('settings', 'settings'); break;
+    case 'print': window.print(); break;
     case 'filter': state.filters[a.dataset.view] = a.dataset.f; renderView(); break;
     case 'new-quote': {
       const cid = a.dataset.client || (db.clients[0] && db.clients[0].id);
@@ -833,12 +1108,12 @@ document.addEventListener('click', e => {
     }
     case 'new-job': {
       if (!db.clients[0]) { toast('Add a client first'); break; }
-      const j = {id:uid(), num:'J-' + db.seq.j++, clientId:db.clients[0].id, quoteId:null, title:'', date:rel(1), status:'scheduled', items:[blankItem()], checklist:[], notes:'', invoiceId:null};
+      const j = {id:uid(), num:'J-' + db.seq.j++, clientId:db.clients[0].id, quoteId:null, title:'', date:rel(1), status:'scheduled', items:[blankItem()], taxes:docTaxes(), discount:null, checklist:[], notes:'', invoiceId:null};
       db.jobs.push(j); save(); renderTabs(); renderView(); openSheet('job', j.id); toast(`Booked ${j.num} for tomorrow`); break;
     }
     case 'new-invoice': {
       if (!db.clients[0]) { toast('Add a client first'); break; }
-      const inv = {id:uid(), num:'INV-' + db.seq.i++, clientId:db.clients[0].id, jobId:null, title:'', date:TODAY, dueDays:15, sent:false, items:[blankItem()], notes:'', payments:[]};
+      const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'standard', clientId:db.clients[0].id, jobId:null, quoteId:null, title:'', date:TODAY, dueDays:+db.settings.terms, sent:false, everSent:false, void:false, items:[blankItem()], taxes:docTaxes(), discount:null, notes:'', payments:[], log:[ev(TODAY, 'Created')]};
       db.invoices.push(inv); save(); renderTabs(); renderView(); openSheet('invoice', inv.id); toast(`Started ${inv.num}`); break;
     }
     case 'new-client': {
@@ -849,7 +1124,7 @@ document.addEventListener('click', e => {
     }
     case 'add-item': case 'add-preset': {
       if (!rec) break;
-      const it = act === 'add-item' ? blankItem() : {...PRICEBOOK[+a.dataset.i], id:uid()};
+      const it = act === 'add-item' ? blankItem() : {...PRICEBOOK[+a.dataset.i], taxable:true, id:uid()};
       rec.items.push(it); commit();
       if (act === 'add-item') { const d = document.getElementById(`it-${it.id}-desc`); if (d) d.focus(); }
       else toast(`Added ${it.desc}`);
@@ -857,15 +1132,28 @@ document.addEventListener('click', e => {
     }
     case 'rm-item': { const id = a.closest('[data-item]').dataset.item; rec.items = rec.items.filter(i => i.id !== id); commit(); break; }
     case 'q-send': rec.status = 'sent'; rec.sentOn = TODAY; commit(); toast(`${rec.num} marked as sent`); break;
-    case 'q-accept': rec.status = 'accepted'; rec.acceptedOn = TODAY; commit(); toast(`${rec.num} accepted. Schedule the job next.`); break;
+    case 'q-accept': rec.status = 'accepted'; rec.acceptedOn = TODAY; commit(); toast(`${rec.num} accepted. Schedule the job or request a deposit.`); break;
     case 'q-decline': rec.status = 'declined'; commit(); toast(`${rec.num} marked as declined`); break;
     case 'q-draft': rec.status = 'draft'; delete rec.sentOn; delete rec.acceptedOn; commit(); toast(`${rec.num} is a draft again`); break;
     case 'q-schedule': {
       const q = a.dataset.id ? byId(db.quotes, a.dataset.id) : rec;
-      const j = {id:uid(), num:'J-' + db.seq.j++, clientId:q.clientId, quoteId:q.id, title:q.title || 'Untitled job', date:rel(2), status:'scheduled', items:clone(q.items),
+      const j = {id:uid(), num:'J-' + db.seq.j++, clientId:q.clientId, quoteId:q.id, title:q.title || 'Untitled job', date:rel(2), status:'scheduled', items:clone(q.items), taxes:taxesOf(q), discount:q.discount ? {...q.discount} : null,
         checklist:[{id:uid(), t:'Confirm date with client', done:false}, {id:uid(), t:'Order materials', done:false}], notes:'', invoiceId:null};
-      db.jobs.push(j); q.jobId = j.id; save(); renderTabs(); renderView(); openSheet('job', j.id);
+      db.jobs.push(j); q.jobId = j.id;
+      db.invoices.forEach(d => { if (d.kind === 'deposit' && d.quoteId === q.id && !d.jobId) d.jobId = j.id; });
+      save(); renderTabs(); renderView(); openSheet('job', j.id);
       toast(`${j.num} booked for ${fmtDate(j.date)}. Change the date if needed.`); break;
+    }
+    case 'deposit': {
+      const src = rec, isQ = type === 'quote';
+      const pct = +db.settings.depositPct;
+      const amt = Math.round(totals(src).total * pct / 100);
+      const inv = {id:uid(), num:'INV-' + db.seq.i++, kind:'deposit', clientId:src.clientId, quoteId:isQ ? src.id : (src.quoteId || null), jobId:isQ ? (src.jobId || null) : src.id,
+        title:`Deposit · ${src.title || 'Untitled'}`, date:TODAY, dueDays:0, sent:false, everSent:false, void:false,
+        items:[{id:uid(), desc:`Deposit (${fmtRate(pct)}%) for ${src.num}${src.title ? ' ' + src.title : ''}`, kind:'flat', qty:1, unit:'ea', rate:amt / 100, taxable:false}],
+        taxes:taxesOf(src), discount:null, notes:'This deposit is credited in full on the final invoice.', payments:[], log:[ev(TODAY, `Requested from ${src.num}`)]};
+      db.invoices.push(inv); save(); renderTabs(); renderView(); openSheet('invoice', inv.id);
+      toast(`${inv.num} drafted for a ${money(amt)} deposit`); break;
     }
     case 'j-start': rec.status = 'in_progress'; if (daysBetween(TODAY, rec.date) > 0) rec.date = TODAY; commit(); toast(`${rec.num} is on site`); break;
     case 'j-done': rec.status = 'done'; if (daysBetween(TODAY, rec.date) > 0) rec.date = TODAY; rec.checklist.forEach(c => c.done = true); commit(); toast(`${rec.num} done. Ready to invoice.`); break;
@@ -873,8 +1161,28 @@ document.addEventListener('click', e => {
     case 'j-invoice': { const j = a.dataset.id ? byId(db.jobs, a.dataset.id) : rec; if (j) invoiceFromJob(j); break; }
     case 'chk-add': { const inp = $('#chk-new'); const t = inp.value.trim(); if (!t) { inp.focus(); break; } rec.checklist.push({id:uid(), t, done:false}); commit(); const n = $('#chk-new'); if (n) n.focus(); break; }
     case 'chk-rm': rec.checklist = rec.checklist.filter(c => c.id !== a.dataset.id); commit(); break;
-    case 'i-send': rec.sent = true; rec.sentOn = TODAY; commit(); toast(`${rec.num} marked as sent`); break;
-    case 'i-draft': rec.sent = false; commit(); toast(`${rec.num} is a draft again`); break;
+    case 'i-send': rec.sent = true; rec.everSent = true; rec.sentOn = TODAY; log(rec, 'Marked as sent'); commit(); toast(`${rec.num} marked as sent`); break;
+    case 'i-draft': rec.sent = false; log(rec, 'Reopened for editing'); commit(); toast(`${rec.num} is a draft again`); break;
+    case 'i-void': {
+      if (rec.payments.length) { toast('Remove the payments before voiding'); break; }
+      if (!arm(a, 'Tap again to void')) break;
+      rec.void = true; log(rec, 'Voided');
+      db.jobs.forEach(j => { if (j.invoiceId === rec.id) j.invoiceId = null; });
+      commit(); toast(`${rec.num} voided. Its number stays on file.`); break;
+    }
+    case 'i-remind': {
+      const inv = a.dataset.id ? byId(db.invoices, a.dataset.id) : rec;
+      const od = iInfo(inv).status === 'overdue';
+      copyText(reminderText(inv), `${od ? 'Overdue' : 'Friendly'} reminder for ${inv.num} copied. Paste it into an email or text.`);
+      inv.lastReminder = TODAY; log(inv, `${od ? 'Overdue' : 'Friendly'} reminder sent`); commit(); break;
+    }
+    case 'i-latefee': {
+      const x = iInfo(rec); const r = +db.settings.lateRate;
+      const fee = Math.round(x.bal * r / 100);
+      if (x.status !== 'overdue' || fee <= 0) break;
+      rec.items.push({id:uid(), desc:`Late fee: ${fmtRate(r)}% of ${money(x.bal)} overdue`, kind:'flat', qty:1, unit:'ea', rate:fee / 100, taxable:false, fee:true, feeDate:TODAY});
+      log(rec, `Late fee of ${money(fee)} added`); commit(); toast(`Late fee of ${money(fee)} added to ${rec.num}`); break;
+    }
     case 'pay': case 'pay-full': {
       const x = iInfo(rec);
       const cents = act === 'pay-full' ? x.bal : Math.round((parseFloat($('#pay-amt').value) || 0) * 100);
@@ -882,10 +1190,16 @@ document.addEventListener('click', e => {
       const method = act === 'pay-full' ? 'e-Transfer' : $('#pay-method').value;
       const date = act === 'pay-full' ? TODAY : ($('#pay-date').value || TODAY);
       rec.payments.push({id:uid(), date, cents, method});
+      log(rec, `Payment of ${money(cents)} received by ${method}`);
+      const after = iInfo(rec);
+      if (after.status === 'paid') log(rec, 'Paid in full');
       commit();
-      toast(iInfo(rec).status === 'paid' ? `${rec.num} is paid in full` : `${money(cents)} recorded. ${money(iInfo(rec).bal)} still owing.`); break;
+      toast(after.status === 'paid' ? `${rec.num} is paid in full` : `${money(cents)} recorded. ${money(after.bal)} still owing.`); break;
     }
-    case 'pay-rm': rec.payments = rec.payments.filter(p => p.id !== a.dataset.id); commit(); toast('Payment removed'); break;
+    case 'pay-rm': {
+      const p = rec.payments.find(x => x.id === a.dataset.id); if (!p) break;
+      rec.payments = rec.payments.filter(x => x !== p); log(rec, `Payment of ${money(p.cents)} removed`); commit(); toast('Payment removed'); break;
+    }
     case 'del': {
       if (!arm(a, 'Tap again to delete')) break;
       const num = rec.num || rec.name || 'Client';
@@ -894,8 +1208,8 @@ document.addEventListener('click', e => {
       db[COL[type]] = db[COL[type]].filter(x => x !== rec);
       state.sheet = null; state.returnTo = null; commit(); toast(`Deleted ${num}`); break;
     }
-    case 'copy': copyText(a.dataset.text, a.dataset.what || 'Text'); break;
-    case 'copy-doc': copyText(docText(type, rec), `${rec.num} text`); break;
+    case 'copy': copyText(a.dataset.text, a.dataset.what || 'Copied'); break;
+    case 'copy-doc': copyText(docText(type, rec), `${rec.num} copied as text`); break;
     case 'copyfall-close': $('#copyfall').hidden = true; break;
     case 'reset': {
       if (!arm(a, 'Tap again to reset')) break;
@@ -907,22 +1221,29 @@ document.addEventListener('click', e => {
 
 document.addEventListener('input', e => {
   const t = e.target; const rec = getRec(); if (!rec) return;
+  const refresh = () => { const box = $('#sheet [data-totals]'); if (box) box.innerHTML = totalsHTML(rec, state.sheet.type); };
   const row = t.closest('[data-item]');
   if (row && t.dataset.k) {
     const it = rec.items.find(i => i.id === row.dataset.item); if (!it) return;
     const k = t.dataset.k;
-    it[k] = (k === 'qty' || k === 'rate') ? (parseFloat(t.value) || 0) : t.value;
+    if (k === 'taxable') it.taxable = t.checked;
+    else it[k] = (k === 'qty' || k === 'rate') ? (parseFloat(t.value) || 0) : t.value;
     if (k === 'kind') { const u = row.querySelector('[data-k="unit"]'); const def = {labour:'hr', material:'ea', flat:'ea'}[t.value]; if (u && (!u.value || ['hr','ea'].includes(u.value))) { u.value = def; it.unit = def; } }
     row.querySelector('.amt').textContent = money(lineCents(it));
-    const box = $('#sheet [data-totals]'); if (box) box.innerHTML = totalsHTML(rec, state.sheet.type);
-    save(); return;
+    refresh(); save(); return;
+  }
+  if (t.dataset.disc) {
+    rec.discount = rec.discount || {mode:'pct', value:0};
+    rec.discount[t.dataset.disc] = t.dataset.disc === 'value' ? (parseFloat(t.value) || 0) : t.value;
+    refresh(); save(); return;
   }
   if (t.dataset.f) {
     let v = t.value;
     if (t.dataset.f === 'date' && !v) return;
-    if (t.dataset.f === 'dueDays') v = +v;
+    if (t.dataset.num !== undefined) v = Math.max(0, parseFloat(v) || 0);
     rec[t.dataset.f] = v; save();
-    if (t.dataset.rerender !== undefined) { renderSheet(); }
+    if (state.sheet.type === 'settings') renderHeader();
+    if (t.dataset.rerender !== undefined) renderSheet();
     else if (state.sheet.type === 'client' && t.dataset.f === 'name') { const s = $('#sheet .sb-title span'); if (s) s.textContent = v || 'New client'; }
   }
 });
@@ -943,6 +1264,7 @@ function route() {
   renderTabs(); renderView();
 }
 window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); });
+renderHeader();
 route();
 })();
 </script>
