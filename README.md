@@ -4,7 +4,7 @@
 
 Most tools in this space cost $30+/month and bury the basics under features. Fieldbook does the core loop well and works on any device with a browser.
 
-**[Try the live demo →](https://YOUR-GITHUB-USERNAME.github.io/fieldbook/)**
+**[Try the live demo →](https://lilmoike.github.io/fieldbook/)**
 
 ![Fieldbook overview screen](docs/overview.png)
 
